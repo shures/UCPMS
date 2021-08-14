@@ -1,0 +1,189 @@
+#home{
+    width: 100%;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#home>#container{
+    width: 83.4%;
+    margin-left: 16%;
+    margin-right: 0.5%;
+    background-color: lightgray;
+    margin-top: 0.5%;
+}
+#home>#container>#home_header{
+    width: 100%;
+    padding: 20px 0 20px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#home>#container>#home_header>#title{
+    display: flex;
+    flex-direction: column;
+}
+#home>#container>#home_header>#title>span{
+
+}
+#home>#container>#home_header>#title>span:nth-child(1){
+    font-size: 25px;
+    font-weight: bold;
+}
+#home>#container>#home_header>#title>span:nth-child(2){
+    font-size: 15px;
+    color:rgba(0,0,0,0.6);
+    font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    text-transform:uppercase ;
+    margin-top: 5px;
+    margin-left: 5px;
+}
+#home>#container>#home_header>#time{
+    color:rgba(0,0,0,0.6);
+    font-weight: bold;
+}
+#home>#container>#home_header>#time>span{
+    margin-right: 10px;
+}
+#home>#container>#home_header>#user{
+    margin-right: 20px;
+    position: relative;
+    width: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#home>#container>#home_header>#user>img{
+    width: 6px;
+    cursor: pointer;
+}
+#home>#container>#home_header>#user>#setting{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50px;
+    display: flex;
+    flex-direction: column;
+    background-color: cadetblue;
+    color:white;
+    border-radius: 2px;
+    z-index: 1;
+}
+#home>#container>#home_header>#user>#setting>span{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+#home>#container>#report{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 3px;
+}
+#home>#container>#report>#left{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+#home>#container>#report>#left>#row{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#home>#container>#report>#left>#row>#year_report{
+    width: 70%;
+    background-color: white;
+    border-radius: 2px;
+    padding-top: 20px;
+}
+#home>#container>#report>#left>#row>#mun_report{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 29%;
+    margin-left: 1%;
+    border-radius: 2px;
+    line-height: 20px;
+    padding-top: 20px;
+}
+#home>#container>#report>#left>#row>#mun_report>b{
+    text-align: center;
+    width: 100%;
+}
+#home>#container>#report>#left>#row>#mun_report>#detail{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+#home>#container>#report>#left>#row>#mun_report>#detail>.item{
+    width: 45%;
+    margin-top: 20px;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+}
+#home>#container>#report>#left>#ward_report{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+#home>#container>#report>#left>#ward_report>.item{
+    width: 17%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 2px;
+    font-size: 16px;
+    background-color: white;
+    padding: 1%;
+}
+#home>#container>#report>#left>#ward_report>.item>b {
+    margin-bottom: 5px;
+    color:green;
+}
+#home>#container>#report>#right{
+    width: 19.5%;
+    display: flex;
+    flex-direction: row;
+    margin-left: 0.5%;
+}
+#home>#container>#report>#right>#foo{
+    background-color: white;
+    width: 96%;
+    border-radius: 2px;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+#home>#container>#data_control{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+}
+#home>#container>#data_control>button{
+    margin-right: 20px;
+    cursor: pointer;
+    padding: 8px 12px 8px 12px;
+    border: none;
+    background-color: rgba(0,0,0,0.8);
+    color:white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+#home>#container>#data_control>button>img{
+    width: 20px;
+    margin-right: 10px;
+}
+#home>#container>#data_control>button:hover{
+    background-color: green;
+}

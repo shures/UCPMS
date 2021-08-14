@@ -1,0 +1,218 @@
+#sifaris{
+    width: 100%;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: row;
+}
+#sifaris>#container{
+    width: 84%;
+    margin-left: 16%;
+    margin-top: 15px;
+    margin-bottom: 50px;
+}
+#sifaris>#container>#title{
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+#sifaris>#container>#project{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+#sifaris>#container>#project>#entry{
+    width: 50%;
+    background-color: white;
+    border-radius: 2px;
+    padding-top: 15px;
+}
+#sifaris>#container>#project>#entry>#select_sifaris{
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    padding-left: 15px;
+}
+#sifaris>#container>#project>#entry>#select_sifaris>button{
+    margin-right: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    padding: 5px;
+    color: black;
+}
+#sifaris>#container>#project>#entry>#select_sifaris>button:hover{
+    background-color: green;
+    color:white;
+}
+#sifaris>#container>#project>#entry>#select_people{
+    background-color: white;
+    margin-top: 40px;
+    padding-left: 20px;
+}
+#sifaris>#container>#project>#entry>#sifaris_data{
+    background-color: white;
+    margin-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item{
+    margin-right: 15px;
+    margin-top: 15px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#input{
+    display: flex;
+    flex-direction: column;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#input input{
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    outline:none;
+    font-family: Kalimati;
+    margin-top: 12px;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#input>select{
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    outline:none;
+    margin-top: 12px;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#result{
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
+    padding: 8px;
+    margin-top: 50px;
+    border-radius: 2px;
+    position: absolute;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span{
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span:hover{
+    color:darkgreen;
+}
+#sifaris>#container>#project>#entry>#controls{
+    background-color: white;
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+    justify-content: center;
+}
+#sifaris>#container>#project>#entry>#controls>button{
+    margin-right: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    padding: 5px 15px 5px 15px;
+    color: black;
+}
+#sifaris>#container>#project>#entry>#controls>button:hover{
+    background-color: darkgray;
+}
+#sifaris>#container>#project>#print_preview{
+    width: 48%;
+    margin-right: 1%;
+    margin-left: 1%;
+    background-color: white;
+    border-radius: 2px;
+}
+#sifaris_a4{
+    width: 80%;
+    padding: 10% 10% 10% 10%;
+    font-size: 14px;
+    font-family: Kalimati;
+}
+#sifaris_a4>#top{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+#sifaris_a4>#top>img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100px;
+}
+#sifaris_a4>#top>#title{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-weight: bold;
+}
+#sifaris_a4>#top>#title>span:nth-child(1){
+    font-size: 18px;
+}
+#sifaris_a4>#top>#title>span:nth-child(2){
+    font-size: 20px;
+}
+#sifaris_a4>#top>#title>span:nth-child(3){
+    font-size: 16px;
+}
+#sifaris_a4>#top>#foo{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+    padding-bottom: 5px;
+    margin-top: 25px;
+}
+#sifaris_a4>#top>#foo>#left{
+    display: flex;
+    flex-direction: column;
+}
+#sifaris_a4>#top>#foo>#left>span{
+
+}
+#sifaris_a4>#top>#foo>#right{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+#sifaris_a4>#top>#foo>#right>span{
+
+}
+#sifaris_a4>#date{
+    width: 100%;
+    text-align: right;
+    margin-top: 10px;
+}
+#sifaris_a4>#office{
+    width: 100%;
+    margin-top: 5px;
+    font-weight: bold;
+}
+#sifaris_a4>#subject{
+    margin-top: 25px;
+    text-decoration: underline;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}
+#sifaris_a4>#body{
+    margin-top: 10px;
+    text-align: justify;
+}
+#sifaris_a4>#sign{
+    margin-top: 80px;
+    width: 100%;
+    text-align: right;
+    font-size: 10px;
+}
+@media print {
+    #sifaris_a4 {
+        /*width: 8.3in;*/
+        /*height: 11.7in;*/
+    }
+}

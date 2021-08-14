@@ -1,0 +1,177 @@
+#agreement_print_preview{
+    width: 100%;
+    background-color: lightgray;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+#agreement_print_preview>#container{
+    width: 65%;
+    margin-left: 16%;
+    display: flex;
+    flex-direction: column;
+}
+#agreement_print_preview>#container>#title{
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#agreement_print_preview>#container>#title>button{
+    cursor: pointer;
+    border: none;
+    padding: 5px 15px 5px 15px;
+    background-color: dodgerblue;
+    color:white;
+}
+#agreement_print_preview>#container>#title>button:hover{
+    color:white;
+    background-color: green;
+}
+#agreement_a4{
+    font-size: 15px;
+    background-color: white;
+    border-radius: 2px;
+    width: 80%;
+    padding: 10%;
+}
+#agreement_a4>#agreement_header{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 25px;
+}
+#agreement_a4>#agreement_header>img{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120px;
+}
+#agreement_a4>#agreement_header>#title{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    font-weight: bold;
+}
+#agreement_a4>#agreement_header>#title>span:nth-child(1){
+    font-size: 22px;
+}
+#agreement_a4>#agreement_header>#title>span:nth-child(2){
+    font-size: 30px;
+}
+#agreement_a4>#agreement_header>#title>span:nth-child(3){
+    font-size: 18px;
+}
+#agreement_a4>#body{
+    margin-top: 20px;
+}
+#agreement_a4>#body>.item{
+    margin-top: 10px;
+    padding-bottom: 10px;
+}
+#agreement_a4>#body>.item>#name{
+    font-weight: bold;
+    font-size: 16px;
+}
+#agreement_a4>#body>.item>.title{
+    margin-left: 20px;
+}
+#agreement_a4>#body>.item>.title>#name{
+
+}
+#agreement_a4>#body>.item>.title>.sub-title{
+    margin-left: 20px;
+}
+#agreement_a4>#body>.item>.title>.sub-title>#name{
+
+}
+#agreement_a4>#body>.item>.title>.sub-title>.sub_sub_title{
+    margin-left: 20px;
+}
+#agreement_a4>#body>.item>.title>.sub-title>.sub_sub_title>span{
+
+}
+#agreement_a4>#body>.item>.title>.sub-title>.sub_sub_title>input{
+
+}
+#agreement_a4 table#simple{
+
+}
+#agreement_a4 table#simple>tr{
+
+}
+#agreement_a4 table#simple>tr>td{
+
+}
+#agreement_a4 table#simple>tr>td>span{
+
+}
+#agreement_a4 table#simple>tr>td>b{
+
+}
+#agreement_a4 table#table{
+    border-collapse: collapse;
+    border: 1px solid rgba(0,0,0,0.5);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#agreement_a4 table#table>tr{
+    border: 1px solid rgba(0,0,0,0.5);
+}
+#agreement_a4 table#table>tr>td{
+    border: 1px solid rgba(0,0,0,0.5);
+}
+#agreement_a4 table#table>tr>th{
+    border: 1px solid rgba(0,0,0,0.5);
+    padding: 3px 5px 3px 5px;
+}
+#agreement_a4 b{
+    text-decoration: dotted underline;
+}
+#agreement_a4 #sarta{
+    font-size:13px;
+}
+#agreement_a4 #sarta>#title{
+    font-size: 25px;
+    font-weight: bold;
+    padding-bottom: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+#agreement_a4 #sarta>#head{
+    font-size: 15px;
+    font-weight: bold;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+#agreement_a4 #sarta>ul{
+    padding: 0;
+    margin: 0;
+}
+#agreement_a4 #sarta>ol>li{
+    text-align: justify;
+}
+#agreement_a4 #sarta>#sign{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+#agreement_a4 table#agree{
+    border: none;
+}
+#agreement_a4 table#agree>tr{
+
+}
+@media print {
+    #agreement_a4 {
+        /*width: 8.3in;*/
+        /*height: 11.7in;*/
+    }
+}
