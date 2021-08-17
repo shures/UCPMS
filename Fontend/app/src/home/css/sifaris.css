@@ -77,6 +77,9 @@
     font-family: Kalimati;
     margin-top: 12px;
 }
+#sifaris>#container>#project>#entry>#sifaris_data>.item>#input .date_picker{
+    cursor: pointer;
+}
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#input>select{
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 2px;

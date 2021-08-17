@@ -177,6 +177,9 @@ export class Home extends React.Component{
                             </div>
                         </div>
                     </div>
+                    <div id="note">
+                        दैनिक रुपमा डाटाहरुलाई डाउनलोड गरी पेनड्राइभ तथा स्टोरेज डिभाइसमा ब्याकप राख्नुहोला ।
+                    </div>
                     <div id="data_control">
                         <button><img src={require('./../../icons/upload-file.svg').default}/> डाटा सर्भरमा अपलोड गर्नुहोस </button>
                         <button> <img src={require('./../../icons/file-download.svg').default}/>डाटा सर्भरबाट डाउनलोड गर्नुहोस </button>

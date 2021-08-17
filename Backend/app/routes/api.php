@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController\UserController;
+use App\Http\Controllers\ContentController\ProjectDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,4 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 });
 Route::post("login",[UserController::class,'login']);
 Route::post("register",[UserController::class,'register']);
+Route::post("putData",[ProjectDataController::class,'putData']);

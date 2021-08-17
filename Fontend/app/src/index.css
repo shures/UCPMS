@@ -1,6 +1,6 @@
 @font-face {
   font-family: kalimati;
-  src: url('./home/files/Kalimati.ttf');
+  src: url('files/Kalimati.ttf');
 }
 body {
   margin: 0;

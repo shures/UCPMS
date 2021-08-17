@@ -53,7 +53,7 @@ export class Sifaris extends React.Component{
                                 <div className="item">
                                     <div id="input">
                                         <span>पत्रको मिति</span>
-                                        <NepaliDatePicker onDateSelect={(date)=>{}} defaultDate={true} />
+                                        <NepaliDatePicker onDateSelect={(date)=>{}} className="date_picker"  defaultDate={false} placeholder="पत्रको मिति" />
                                     </div>
                                 </div>
                                 {this.state.sifaris_selected==="ac" ?
@@ -88,7 +88,7 @@ class SifarisPrint extends React.PureComponent {
         return (
             <div id='sifaris_a4'>
                 <div id="top">
-                    <img src={require('./../files/emblem_logo.png').default}/>
+                    <img src={require('../../files/emblem_logo.png').default}/>
                     <div id="title">
                         <span>थासाङ गाउँपालिका</span>
                         <span>गाउँकार्यपालिकाको कार्यालय</span>

@@ -68,9 +68,9 @@
 #project_entry table#simple>tr>td>span{
 
 }
-#project_entry table#simple>tr>td>input{
+#project_entry table#simple>tr>td input{
     border: 1px solid rgba(0,0,0,0.2);
-    padding: 3px;
+    padding: 6px;
     border-radius: 2px;
     outline:none;
 }
@@ -93,13 +93,16 @@
     border: 1px solid rgba(0,0,0,0.3);
     padding: 0 3px 0 3px;
 }
+#project_entry input{
+    font-weight: bold;
+}
 #project_entry table#border_collapse input{
-    padding: 5px;
+    padding: 8px;
     outline:none;
     border: none;
 }
 #project_entry #long_width{
-    width: 500px;
+    width: 300px;
 }
 #project_entry>#container>#controls{
     margin-top: 15px;
@@ -119,4 +122,19 @@
 #project_entry>#container>#controls>button:hover{
     background-color: green;
     color:white;
+}
+#project_entry #required{
+    color:rgba(255,0,0,0.8);
+    margin-left: 5px;
+    font-size: 16px;
+}
+#project_entry #dropdown_option{
+    color:#1c7430;
+    cursor: pointer;
+}
+#project_entry select{
+    padding: 5px;
+    outline:none;
+    border: 1px solid rgba(0,0,0,0.3);
+    margin-left: 10px;
 }

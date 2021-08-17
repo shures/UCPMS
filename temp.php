@@ -1,0 +1,130 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+class CreateRecordsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('records', function (Blueprint $table) {
+            $table->id();
+            $table->string('upabhokta_samitiko_naam');
+            $table->string('upabokta_samitiko_thegana');
+            $table->string('aayojanako_naam');
+            $table->string('aayojanako_sthal');
+            $table->string('aayojanako_udeshya');
+            $table->string('aayojana_suru_miti');
+            $table->string('lagat_anuman');
+            $table->string('lagat_behorne_karyalay');
+            $table->string('lagat_behorne_upobhokta_samiti');
+            $table->string('lagat_behorne_anne');
+            $table->string('bastugat_anudan_sangbata_samagriko_naam');
+            $table->string('bastugat_anudan_sangbata_samagriko_naam');
+            $table->string('bastugat_anudan_sangbata_ekai');
+            $table->string('bastugat_anudan_pradeshbata_samagriko_naam');
+            $table->string('bastugat_anudan_pradeshbata_ekai');
+            $table->string('bastugat_anudan_sthaniyebata_samagriko_naam');
+            $table->string('bastugat_anudan_sthaniyebata_ekai');
+            $table->string('bastugat_anudan_gairasarakaribata_samagriko_naam');
+            $table->string('bastugat_anudan_gairasarakaribata_ekai');
+            $table->string('bastugat_anudan_bideshbata_samagriko_naam');
+            $table->string('bastugat_anudan_bideshbata_ekai');
+            $table->string('bastugat_anudan_upobhoktasamitibata_samagriko_naam');
+            $table->string('bastugat_anudan_upokhoktasamitibata_ekai');
+            $table->string('bastugat_anudan_anne_samagriko_naam');
+            $table->string('bastugat_anudan_anne_ekai');
+            $table->string('aayojana_labhanbit_gharpariwar_sangkhya');
+            $table->string('aayojana_labhanbit_janasankhya');
+            $table->string('aayojana_labhanbit_sangathit_sangkhya');
+            $table->string('aayojana_labhanbit_anne');
+            $table->string('gathan_vayeko_miti');
+            $table->string('adaxya_name');
+            $table->string('adaxya_thegana');
+            $table->string('adaxya_na_number');
+            $table->string('adaxya_jilla');
+            $table->string('sachib_name');
+            $table->string('sachib_thegana');
+            $table->string('sachib_na_number');
+            $table->string('sachib_jilla');
+            $table->string('kosha_name');
+            $table->string('kosha_thegana');
+            $table->string('kosha_na_number');
+            $table->string('kosha_jilla');
+            $table->string('sadasshya1_name');
+            $table->string('sadasshya1_thegana');
+            $table->string('sadasshya1_na_number');
+            $table->string('sadasshya1_jilla');
+            $table->string('sadasshya2_name');
+            $table->string('sadasshya2_thegana');
+            $table->string('sadasshya2_na_number');
+            $table->string('sadasshya2_jilla');
+            $table->string('sadasshya3_name');
+            $table->string('sadasshya3_thegana');
+            $table->string('sadasshya3_na_number');
+            $table->string('sadasshya3_jilla');
+            $table->string('sadasshya4_name');
+            $table->string('sadasshya4_thegana');
+            $table->string('sadasshya4_na_number');
+            $table->string('sadasshya4_jilla');
+            $table->string('sadasshya5_name');
+            $table->string('sadasshya5_thegana');
+            $table->string('sadasshya5_na_number');
+            $table->string('sadasshya5_jilla');
+            $table->string('sadasshya6_name');
+            $table->string('sadasshya6_thegana');
+            $table->string('sadasshya6_na_number');
+            $table->string('sadasshya6_jilla');
+            $table->string('sadasshya7_name');
+            $table->string('sadasshya7_thegana');
+            $table->string('sadasshya7_na_number');
+            $table->string('sadasshya7_jilla');
+            $table->string('sadasshya8_name');
+            $table->string('sadasshya8_thegana');
+            $table->string('sadasshya8_na_number');
+            $table->string('sadasshya8_jilla');
+            $table->string('upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya');
+            $table->string('anubhav_barsa');
+            $table->string('pratham_miti');
+            $table->string('pratham_rakam');
+            $table->string('pratham_samagriko_pariman');
+            $table->string('pratham_kaifiyet');
+            $table->string('dorshro_miti ');
+            $table->string('dorshro_rakam');
+            $table->string('dorshro_samagriko_pariman');
+            $table->string('dorshro_kaifiyet');
+            $table->string('teshro_miti');
+            $table->string('teshro_rakam');
+            $table->string('teshro_kaifiyet');
+            $table->string('jamma_miti');
+            $table->string('jamma_rakam');
+            $table->string('jamma_samagriko_pariman');
+            $table->string('jamma_kaifiyet');
+            $table->string('yojana_marmat_jimma_line_samiti');
+            $table->string('marmat_sambhabit_srot');
+            $table->string('janasramdan');
+            $table->string('sewa_sulka');
+            $table->string('dastur_chandabata');
+            $table->string('anne_kehi_vaye');
+            $table->string('aayojana_ante_miti');
+            $table->string('aayojana_hune_woda');
+            $table->string('pramukha_prashasakiyeko_name');
+            $table->string('pramukha_prashasakiyeko_number');
+            $table->string('adaxyako_number');
+            $table->string('kaifiyet');
+        });
+    }
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('records');
+    }
+}

@@ -12,7 +12,7 @@ export class Header extends React.Component{
         return (
             <div id="header">
                 <div id="logo">
-                    <img src={require('../files/emblem_logo.png').default}/>
+                    <img src={require('../../files/emblem_logo.png').default}/>
                 </div>
                 <div id="title">
                     <span>थासाङ गाउँपालिका</span>
