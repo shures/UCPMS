@@ -1,0 +1,93 @@
+#option_entry{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+#option_entry>#container{
+    width: 85%;
+    margin-left: 15%;
+    display: flex;
+    flex-direction: column;
+    background-color: lightgray;
+    padding: 1%;
+}
+#option_entry>#container>#title{
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+#option_entry>#container>#entry{
+    background-color: whitesmoke;
+    border-radius: 2px;
+    padding: 1%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+#option_entry>#container>#entry>#select_item{
+
+}
+#option_entry>#container>#entry>#select_item>select{
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    outline:none;
+    margin-top: 12px;
+    padding: 5px;
+}
+#option_entry>#container>#entry>.item{
+
+}
+#option_entry>#container>#entry.item>#input{
+
+}
+#option_entry>#container>#entry>.item>#input>span{
+    margin-right: 10px;
+}
+#option_entry>#container>#entry>.item>#input>input{
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 2px;
+    outline:none;
+    font-family: Kalimati;
+    margin-top: 12px;
+    padding: 2px 5px 2px 5px;
+    width: 200px;
+}
+#option_entry>#container>#entry>#control{
+
+}
+#option_entry>#container>#entry>#control>button{
+    margin-right: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    padding: 5px 15px 5px 15px;
+    margin-top: 15px;
+    background-color: darkgreen;
+    color:white;
+}
+#option_entry>#container>#entry>#control>button:hover{
+    background-color: green;
+    color:white;
+}
+#option_entry>#container>#entry>#control>#error{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+#option_entry>#container>#entry>#control>#error>span{
+    color:brown;
+    font-size: 14px;
+    padding: 3px;
+}
+#option_entry>#container>#entry>#control>#status{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+#option_entry>#container>#entry>#control>#status>span{
+    color:darkgreen;
+    font-size: 14px;
+    padding: 3px;
+
+}

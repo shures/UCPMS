@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController\UserController;
 use App\Http\Controllers\ContentController\ProjectDataController;
+use App\Http\Controllers\ContentController\ProjectOptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,4 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 Route::post("login",[UserController::class,'login']);
 Route::post("register",[UserController::class,'register']);
 Route::post("putData",[ProjectDataController::class,'putData']);
+Route::post("put_option_bank",[ProjectOptionController::class,'put_option_bank']);

@@ -45,7 +45,7 @@ export class Header extends React.Component{
                         </Link>
                     </div>
                     <div className="item">
-                        <Link to='/project_entry'>
+                        <Link to='/option_entry'>
                             <img src={require('./../../icons/document-give.svg').default}/>
                             <div id="title">विवरण प्रविष्टि</div>
                         </Link>
