@@ -1,7 +1,9 @@
 import React from "react";
+import NepaliDate from 'nepali-date-converter'
 import './../css/home.css';
 import {Header} from "./header";
 import {Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,PieChart,Pie} from "recharts";
+import axios from "axios";
 const data01 = [
     { name: 'Group A', value: 400 },
     { name: 'Group B', value: 300 },
@@ -10,7 +12,6 @@ const data01 = [
     { name: 'Group E', value: 278 },
     { name: 'Group F', value: 189 },
 ];
-
 const data02 = [
     { name: 'Group A', value: 2400 },
     { name: 'Group B', value: 4567 },
@@ -21,54 +22,100 @@ const data02 = [
 ];
 const data = [
     {
-        name: '2078',
-        uv: 4000,
-        pv: 2400,
-        amt: 2400,
+        name: 'श्रावण',
+        योजनाहरु: 4,
+        लागत_अनुमान : 20,
     },
     {
-        name: 'Page B',
-        uv: 3000,
-        pv: 1398,
-        amt: 2210,
+        name: 'असोज',
+        योजनाहरु: 12,
+        लागत_अनुमान : 36,
     },
     {
-        name: 'Page C',
-        uv: 2000,
-        pv: 9800,
-        amt: 2290,
+        name: 'कार्तिक',
+        योजनाहरु: 12,
+        लागत_अनुमान : 7,
     },
     {
-        name: 'Page D',
-        uv: 2780,
-        pv: 3908,
-        amt: 2000,
+        name: 'मंसिर',
+        योजनाहरु: 25,
+        लागत_अनुमान : 8,
     },
     {
-        name: 'Page E',
-        uv: 1890,
-        pv: 4800,
-        amt: 2181,
+        name: 'पुष',
+        योजनाहरु: 4,
+        लागत_अनुमान : 42,
     },
     {
-        name: 'Page F',
-        uv: 2390,
-        pv: 3800,
-        amt: 2500,
+        name: 'माघ',
+        योजनाहरु: 2,
+        लागत_अनुमान : 200,
     },
     {
-        name: 'Page G',
-        uv: 3490,
-        pv: 4300,
-        amt: 2100,
+        name: 'फागुन',
+        योजनाहरु: 4,
+        लागत_अनुमान : 2,
+    },
+    {
+        name: 'चैत्र',
+        योजनाहरु: 14,
+        लागत_अनुमान : 2,
+    },
+    {
+        name: 'बैशाख',
+        योजनाहरु: 12,
+        लागत_अनुमान : 2,
+    },
+    {
+        name: 'जेष्ठ',
+        योजनाहरु: 4,
+        लागत_अनुमान : 0,
+    },
+    {
+        name: 'असार',
+        योजनाहरु: 4,
+        लागत_अनुमान : 0,
     },
 ];
+
 export class Home extends React.Component{
     constructor() {
         super();
         this.state = {
             showSetting:false,
+            nepaliDate:null,
+            aa_ba:null,
+            barChartData:[
+
+            ],
         }
+    }
+    componentDidMount() {
+        // var bs = require('bikram-sambat');
+        // const current = new Date();
+        // let date = `${current.getFullYear()}-${current.getMonth()+1}-${current.getDate()}`;
+        // let dateNepali = bs.toBik_text(date);
+        // this.setState({nepaliDate:dateNepali});
+        // // barChartData.push({name: 'असार', योजनाहरु : 5, लागत_अनुमान : 12});
+        // // this.setState({barChartData:barChartData});
+         axios({
+            method: 'post',
+            url: localStorage.getItem('server')+'api/getBarChart',
+            data: {},
+        }).then( (response)=>{
+             let months = ['साउन', 'भाद्र', 'असोज', 'कार्तिक','मंसिर', 'पुष', 'माघ', 'फागुन', 'चैत्र', 'बैशाख', 'जेष्ठ','असार'];
+             let barChartData= [...this.state.barChartData];
+             response.data.forEach((item,index,arr)=>{
+                 if(item[0].lagat_anuman===null){
+                     barChartData.push({name: months[index] ,लागत_अनुमान_लाखमा : 0, योजनाहरु : item[0].yojanaharu});
+                 }else{
+                     barChartData.push({name: months[index], लागत_अनुमान_लाखमा : item[0].lagat_anuman/100000, योजनाहरु : item[0].yojanaharu});
+                 }
+             })
+             this.setState({barChartData:barChartData});
+        }).catch(function (error) {
+
+        });
     }
     render() {
         return (
@@ -81,8 +128,8 @@ export class Home extends React.Component{
                             <span>Project Management Information System</span>
                         </div>
                         <div id="time">
-                            <span>आर्थिक बर्ष : २०७७।७८,</span>
-                            <span>मिति : २०७७।१२।१३, बुघबार</span>
+                            <span>आर्थिक बर्ष : {this.state.aa_ba},</span>
+                            <span>मिति : {this.state.nepaliDate}</span>
                         </div>
                         <div id="user">
                             <img onClick={()=>this.setState({showSetting:!this.state.showSetting})} src={require('./../../icons/3-vertical-dots.svg').default}/>
@@ -96,26 +143,29 @@ export class Home extends React.Component{
                     <div id="report">
                         <div id="left">
                             <div id="row">
-                                <div id="year_report">
+                                <div id="year_report" onChange={()=>{
+                                    alert('hello world');
+                                }}>
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart
                                             width={500}
                                             height={300}
-                                            data={data}
+                                            data={this.state.barChartData}
                                             margin={{
                                                 top: 5,
                                                 right: 30,
                                                 left: 20,
                                                 bottom: 5,
                                             }}
+                                            allowDecimals={true}
                                         >
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
                                             <Legend />
-                                            <Bar dataKey="pv" fill="darkgray" />
-                                            <Bar dataKey="uv" fill="green" />
+                                            <Bar dataKey="योजनाहरु" fill="darkgray" />
+                                            <Bar dataKey="लागत_अनुमान_लाखमा" fill="green" />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -133,34 +183,44 @@ export class Home extends React.Component{
                             </div>
                             <div id='ward_report'>
                                 <div className="item">
-                                    <b>१ नं. वडा, टुुकुचे</b>
-                                    <span>योजना : 50 वटा</span>
-                                    <span>ला.अ. : रु 355500</span>
-                                    <span>ज. : रु 355500</span>
+                                    <div>
+                                        <b>१ नं. वडा, टुुकुचे</b>
+                                        <span>योजना : 50 वटा</span>
+                                        <span>ला.अ. : रु 355500</span>
+                                        <span>ज. : रु 355500</span>
+                                    </div>
                                 </div>
                                 <div className="item">
-                                    <b>२ नं. वडा, कोबाङ</b>
-                                    <span>योजना : 50 वटा</span>
-                                    <span>ला.अ. : रु 355500</span>
-                                    <span>ज. : रु 355500</span>
+                                    <div>
+                                        <b>१ नं. वडा, टुुकुचे</b>
+                                        <span>योजना : 50 वटा</span>
+                                        <span>ला.अ. : रु 355500</span>
+                                        <span>ज. : रु 355500</span>
+                                    </div>
                                 </div>
                                 <div className="item">
-                                    <b>३ नं. वडा, लेते</b>
-                                    <span>योजना : 50 वटा</span>
-                                    <span>ला.अ. : रु 355500</span>
-                                    <span>ज. : रु 355500</span>
+                                    <div>
+                                        <b>१ नं. वडा, टुुकुचे</b>
+                                        <span>योजना : 50 वटा</span>
+                                        <span>ला.अ. : रु 355500</span>
+                                        <span>ज. : रु 355500</span>
+                                    </div>
                                 </div>
                                 <div className="item">
-                                    <b>४ नं. वडा, घाँसा</b>
-                                    <span>योजना : 50 वटा</span>
-                                    <span>ला.अ. : रु 355500</span>
-                                    <span>ज. : रु 355500</span>
+                                    <div>
+                                        <b>१ नं. वडा, टुुकुचे</b>
+                                        <span>योजना : 50 वटा</span>
+                                        <span>ला.अ. : रु 355500</span>
+                                        <span>ज. : रु 355500</span>
+                                    </div>
                                 </div>
                                 <div className="item">
-                                    <b>५ नं. वडा, कुञ्जो</b>
-                                    <span>योजना : 50 वटा</span>
-                                    <span>ला.अ. : रु 355500</span>
-                                    <span>ज. : रु 355500</span>
+                                    <div>
+                                        <b>१ नं. वडा, टुुकुचे</b>
+                                        <span>योजना : 50 वटा</span>
+                                        <span>ला.अ. : रु 355500</span>
+                                        <span>ज. : रु 355500</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -27,4 +27,11 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 Route::post("login",[UserController::class,'login']);
 Route::post("register",[UserController::class,'register']);
 Route::post("putData",[ProjectDataController::class,'putData']);
-Route::post("put_option_bank",[ProjectOptionController::class,'put_option_bank']);
+Route::post("put_option",[ProjectOptionController::class,'put_option']);
+Route::post("getOptionRecord",[ProjectOptionController::class,'getOptionRecord']);
+Route::post("getProject",[ProjectDataController::class,'getProject']);
+Route::post("getOptions",[ProjectOptionController::class,'getOptions']);
+Route::post("searchProject",[ProjectDataController::class,'searchProject']);
+Route::post("getSifaris",[ProjectDataController::class,'getSifaris']);
+Route::post("getProjects",[ProjectDataController::class,'getProjects']);
+Route::post("getBarChart",[ProjectDataController::class,'getBarChart']);

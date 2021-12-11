@@ -89,5 +89,32 @@
     color:darkgreen;
     font-size: 14px;
     padding: 3px;
-
+}
+#option_entry>#container>#record{
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 2px;
+    background-color: white;
+}
+#option_entry>#container>#record>table{
+    font-family: Kalimati;
+}
+#option_entry>#container>#record>table>tr{
+    cursor: pointer;
+}
+#option_entry>#container>#record>table>tr>td{
+    padding: 2px 5px 2px 5px;
+    white-space: nowrap;
+}
+#option_entry>#container>#record>table>tr:hover{
+    color:darkgreen;
+}
+#option_entry>#container>#record>table>tr:nth-child(odd){
+    background-color: rgba(0,0,0,0.09);;
+}
+#option_entry>#container>#record>table>tr:nth-child(1) {
+    color:black;
+    font-weight: bold;
 }

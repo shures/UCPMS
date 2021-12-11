@@ -24,6 +24,7 @@ class CreateRecordsTable extends Migration
             $table->bigInteger('lagat_anuman');
             $table->bigInteger('lagat_behorne_karyalay');
             $table->bigInteger('lagat_behorne_upobhokta_samiti');
+            $table->integer('lagat_behorne_anne_option');
             $table->bigInteger('lagat_behorne_anne');
 
             $table->string('aayojana_labhanbit_gharpariwar_sangkhya');
@@ -43,8 +44,7 @@ class CreateRecordsTable extends Migration
             $table->string('anne_kehi_vaye');
             $table->date('aayojana_ante_miti');
             $table->string('aayojana_hune_woda');
-            $table->string('pramukha_prashasakiyeko_name');
-            $table->string('pramukha_prashasakiyeko_number');
+            $table->integer('pramukha_prashasakiyeko_name');
             $table->string('adaxyako_number');
             $table->string('kaifiyet');
         });

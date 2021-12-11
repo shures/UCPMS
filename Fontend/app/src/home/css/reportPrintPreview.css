@@ -1,0 +1,95 @@
+#reportPrintPreview{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 15px;
+}
+#reportPrintPreview>#container{
+    width: 83%;
+    margin-left: 15%;
+    display: flex;
+    flex-direction: column;
+    background-color: lightgray;
+    padding: 10px 1% 200px 1%;
+}
+#reportPrintPreview>#title{
+    font-weight: bold;
+    font-size: 25px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+#reportPrintPreview>#projects{
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    padding: 1%;
+    border-radius: 2px;
+    display:block;
+}
+#reportPrintPreview>#projects>#report_header{
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#reportPrintPreview>#projects>#report_header>img{
+    width: 120px;
+}
+#reportPrintPreview>#projects>#report_header>#title{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    color:black;
+}
+#reportPrintPreview>#projects>#report_header>#title>span:nth-child(1){
+    font-size: 20px;
+    font-weight: bold;
+}
+#reportPrintPreview>#projects>#report_header>#title>span:nth-child(2){
+
+}
+#reportPrintPreview>#projects>#report_header>#title>span:nth-child(3){
+    font-size: 20px;
+}
+#reportPrintPreview>#projects>#search_result{
+    background-color: white;
+    width: 100%;
+}
+#reportPrintPreview>#projects>#search_result>table{
+    font-family: Kalimati;
+    width: 100%;
+    border-collapse: collapse;
+}
+#reportPrintPreview>#projects>#search_result>table>tr{
+    cursor: pointer;
+}
+#reportPrintPreview>#projects>#search_result>table>tr:hover{
+    color:darkgreen;
+}
+#reportPrintPreview>#projects>#search_result>table>tr:nth-child(odd){
+    background-color: rgba(0,0,0,0.09);;
+}
+#reportPrintPreview>#projects>#search_result>table>tr:nth-child(1) {
+    background-color:darkgray;
+    color:black;
+}
+#reportPrintPreview>#projects>#search_result>table td{
+    text-align: left;
+}
+#reportPrintPreview>#projects>#search_result>table img{
+    width: 20px;
+    margin-right: 15px;
+}
+#reportPrintPreview>#projects>#search_result>table>tr>th,#reportPrintPreview>#projects>#search_result>table>tr>td{
+    padding: 3px;
+    font-size: 13px;
+    text-align: left;
+}
+#reportPrintPreview>#projects>#search_result>table,#report>#projects>#search_result>table>tr,#reportPrintPreview>#projects>#search_result>table>tr>th,#reportPrintPreview>#projects>#search_result>table>tr>td{
+
+}
+@media print{
+    #reportPrintPreview>#projects{
+    }
+}

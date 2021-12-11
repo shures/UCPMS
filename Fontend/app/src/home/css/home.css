@@ -98,7 +98,7 @@
     width: 100%;
 }
 #home>#container>#report>#left>#row>#year_report{
-    width: 70%;
+    width: 75%;
     background-color: white;
     border-radius: 2px;
     padding-top: 20px;
@@ -107,7 +107,7 @@
     display: flex;
     flex-direction: column;
     background-color: white;
-    width: 29%;
+    width: 24%;
     margin-left: 1%;
     border-radius: 2px;
     line-height: 20px;
@@ -116,6 +116,8 @@
 #home>#container>#report>#left>#row>#mun_report>b{
     text-align: center;
     width: 100%;
+    color:#1a202c;
+    font-size: 15px;
 }
 #home>#container>#report>#left>#row>#mun_report>#detail{
     width: 100%;
@@ -123,12 +125,28 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 30px;
+    margin-bottom: 5px;
+
 }
 #home>#container>#report>#left>#row>#mun_report>#detail>.item{
     width: 45%;
-    margin-top: 20px;
+    margin-top: 5px;
     margin-left: 2.5%;
     margin-right: 2.5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: left;
+    background-color: #1c7430;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: whitesmoke;
+    border-radius: 2px;
+    cursor: pointer;
+}
+#home>#container>#report>#left>#row>#mun_report>#detail>.item:hover{
+    background-color: white;
+    color: black;
 }
 #home>#container>#report>#left>#ward_report{
     width: 100%;
@@ -140,13 +158,19 @@
 #home>#container>#report>#left>#ward_report>.item{
     width: 17%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
     border-radius: 2px;
-    font-size: 16px;
     background-color: white;
     padding: 1%;
+    cursor: pointer;
 }
-#home>#container>#report>#left>#ward_report>.item>b {
+#home>#container>#report>#left>#ward_report>.item>div{
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+#home>#container>#report>#left>#ward_report>.item>div>b {
     margin-bottom: 5px;
     color:green;
 }

@@ -97,9 +97,22 @@
     font-weight: bold;
 }
 #project_entry table#border_collapse input{
-    padding: 8px;
     outline:none;
     border: none;
+}
+#project_entry table#border_collapse img{
+    width: 15px;
+    padding:  2px 0 0 5px;
+    cursor: pointer;
+}
+#project_entry table#border_collapse select{
+    outline:none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+#project_entry #button{
+    margin-left: 15px;
 }
 #project_entry #long_width{
     width: 300px;
@@ -137,4 +150,17 @@
     outline:none;
     border: 1px solid rgba(0,0,0,0.3);
     margin-left: 10px;
+}
+#project_entry #button{
+    margin-left: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    padding: 5px 15px 5px 15px;
+    background-color: darkgray;
+    color:black;
+}
+#project_entry #button:hover{
+    background-color: #1a202c;
+    color: whitesmoke;
 }

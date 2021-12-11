@@ -13,8 +13,8 @@
     flex-direction: column;
 }
 #agreement_print_preview>#container>#title{
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 #agreement_print_preview>#container>#title>button{
     cursor: pointer;
@@ -28,18 +28,18 @@
     background-color: green;
 }
 #agreement_a4{
-    font-size: 15px;
+    font-size: 13px;
     background-color: white;
     border-radius: 2px;
-    width: 80%;
-    padding: 10%;
+    width: 90%;
+    padding: 5%;
 }
 #agreement_a4>#agreement_header{
     width: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-    padding-bottom: 25px;
+    padding-bottom: 20px;
 }
 #agreement_a4>#agreement_header>img{
     position: absolute;
@@ -54,24 +54,24 @@
     font-weight: bold;
 }
 #agreement_a4>#agreement_header>#title>span:nth-child(1){
-    font-size: 22px;
-}
-#agreement_a4>#agreement_header>#title>span:nth-child(2){
-    font-size: 30px;
-}
-#agreement_a4>#agreement_header>#title>span:nth-child(3){
     font-size: 18px;
 }
+#agreement_a4>#agreement_header>#title>span:nth-child(2){
+    font-size: 26px;
+}
+#agreement_a4>#agreement_header>#title>span:nth-child(3){
+    font-size: 14px;
+}
 #agreement_a4>#body{
-    margin-top: 20px;
+    margin-top: 10px;
+    font-size: 13px;
 }
 #agreement_a4>#body>.item{
-    margin-top: 10px;
-    padding-bottom: 10px;
+    margin-top: 5px;
+    padding-bottom: 5px;
 }
 #agreement_a4>#body>.item>#name{
     font-weight: bold;
-    font-size: 16px;
 }
 #agreement_a4>#body>.item>.title{
     margin-left: 20px;
@@ -95,7 +95,7 @@
 
 }
 #agreement_a4 table#simple{
-
+    font-size: 13px;
 }
 #agreement_a4 table#simple>tr{
 
@@ -112,27 +112,31 @@
 #agreement_a4 table#table{
     border-collapse: collapse;
     border: 1px solid rgba(0,0,0,0.5);
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 13px;
 }
 #agreement_a4 table#table>tr{
     border: 1px solid rgba(0,0,0,0.5);
 }
 #agreement_a4 table#table>tr>td{
     border: 1px solid rgba(0,0,0,0.5);
+    padding: 2px 7px 2px 7px;
+    text-align: left;
 }
 #agreement_a4 table#table>tr>th{
     border: 1px solid rgba(0,0,0,0.5);
-    padding: 3px 5px 3px 5px;
+    padding: 2px 7px 2px 7px;
+    text-align: left;
 }
 #agreement_a4 b{
     text-decoration: dotted underline;
 }
 #agreement_a4 #sarta{
-    font-size:13px;
+    font-size:12px;
 }
 #agreement_a4 #sarta>#title{
-    font-size: 25px;
+    font-size: 18px;
     font-weight: bold;
     padding-bottom: 10px;
     width: 100%;

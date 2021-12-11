@@ -46,6 +46,25 @@
     padding: 5px;
     margin-top: 2px;
 }
+#report>#container>#controls{
+    display: flex;
+    flex-direction: row;
+}
+#report>#container>#controls>button{
+    margin-right: 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 2px;
+    padding: 5px 15px 5px 15px;
+    color: whitesmoke;
+    margin-top: 15px;
+    background-color: gray;
+    display: flex;
+    flex-direction: row;
+}
+#report>#container>#controls>button:hover{
+    background-color: #1c7430;
+}
 #report>#container>#project>#controls{
     margin-bottom: 15px;
     display: flex;
@@ -53,7 +72,10 @@
     justify-content: space-between;
     align-items: center;
 }
-#report>#container>#project>#controls>button{
+#report>#container>#project>#controls>*{
+    text-decoration: none;
+}
+#report>#container>#project>#controls button{
     margin-right: 15px;
     cursor: pointer;
     border: none;
@@ -65,11 +87,11 @@
     display: flex;
     flex-direction: row;
 }
-#report>#container>#project>#controls>button>img{
+#report>#container>#project>#controls button>img{
     width: 20px;
     margin-right: 10px;
 }
-#report>#container>#project>#controls>button:hover{
+#report>#container>#project>#controls button:hover{
     background-color: green;
     color:white;
 }
@@ -110,4 +132,7 @@
 }
 #report>#container>#project>#search_result>table,#report>#container>#project>#search_result>table>tr,#report>#container>#project>#search_result>table>tr>th,#report>#container>#project>#search_result>table>tr>td{
 
+}
+table td, table th{
+    text-align: left;
 }

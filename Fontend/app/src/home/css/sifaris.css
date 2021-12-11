@@ -53,22 +53,23 @@
 #sifaris>#container>#project>#entry>#sifaris_data{
     background-color: white;
     margin-top: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
+    width: 90%;
+    padding: 0 5% 0 5%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item{
-    margin-right: 15px;
     margin-top: 15px;
     font-size: 14px;
-    display: flex;
-    flex-direction: column;
+    position:relative;
+    width: 45%;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#input{
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#input input{
     border: 1px solid rgba(0,0,0,0.2);
@@ -79,22 +80,26 @@
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#input .date_picker{
     cursor: pointer;
+    width: 100%;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#input>select{
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 2px;
     outline:none;
     margin-top: 12px;
+    padding: 3px;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#result{
     display: flex;
     flex-direction: column;
-    background-color: white;
-    box-shadow: 0 0 1px 1px rgba(0,0,0,0.2);
-    padding: 8px;
-    margin-top: 50px;
-    border-radius: 2px;
+    box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
+    padding: 2.5%;
+    border-radius: 1px;
     position: absolute;
+    width: 95%;
+    background-color: whitesmoke;
+    z-index: 1;
+    margin-top: 5px;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span{
     font-size: 13px;
@@ -102,7 +107,8 @@
     margin-top: 2px;
 }
 #sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span:hover{
-    color:darkgreen;
+    color:brown;
+    font-weight:bold;
 }
 #sifaris>#container>#project>#entry>#controls{
     background-color: white;
