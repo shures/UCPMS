@@ -93,6 +93,11 @@
     border: 1px solid rgba(0,0,0,0.3);
     padding: 0 3px 0 3px;
 }
+table#border_collapse>tr>td:first-child{
+    background-color: gray;
+    color: black;
+}
+
 #project_entry input{
     font-weight: bold;
 }
@@ -110,6 +115,8 @@
     border: none;
     padding: 0;
     margin: 0;
+    background-color: gray;
+    color: whitesmoke;
 }
 #project_entry #button{
     margin-left: 15px;
@@ -135,6 +142,18 @@
 #project_entry>#container>#controls>button:hover{
     background-color: green;
     color:white;
+}
+#project_entry>#container>#controls a{
+    text-decoration: none;
+    color:darkgreen;
+}
+#project_entry>#container>#controls>#errors{
+    display: flex;
+    flex-direction: column;
+    color: darkred;
+}
+#project_entry>#container>#controls>#submitStatus{
+    color:#1c7430;
 }
 #project_entry #required{
     color:rgba(255,0,0,0.8);

@@ -6,11 +6,11 @@ export class ReportPrintPreview extends React.Component{
     constructor() {
         super();
         this.state = {
-            projects:[],
+            searchedProjects:[],
         }
     }
     componentDidMount() {
-        this.setState({projects:this.props.location.projects});
+        this.setState({searchedProjects:this.props.location.searchedProjects});
     }
     render() {
         return (
@@ -52,21 +52,21 @@ export class ReportPrintPreview extends React.Component{
                                     <th>अध्यक्षको नाम,थर</th>
                                     <th>अध्यक्षको सम्पर्क नं.</th>
                                 </tr>
-                                {/*{this.state.projects.map((project,index)=>{*/}
-                                {/*    return <tr key={index}>*/}
-                                {/*        <td>{index+1}</td>*/}
-                                {/*        <td>{project.upabhokta_samitiko_naam},{project.upabokta_samitiko_thegana} </td>*/}
-                                {/*        <td>{project.aayojana_hune_woda}</td>*/}
-                                {/*        <td>{project.aayojana_suru_miti}</td>*/}
-                                {/*        <td>{project.aayojana_ante_miti}</td>*/}
-                                {/*        <td>{project.lagat_anuman}</td>*/}
-                                {/*        <td>{project.lagat_behorne_karyalay}</td>*/}
-                                {/*        <td>{project.lagat_behorne_upobhokta_samiti}</td>*/}
-                                {/*        <td>{project.gathan_vayeko_miti}</td>*/}
-                                {/*        <td>{project.name}</td>*/}
-                                {/*        <td>{project.adaxyako_number}</td>*/}
-                                {/*    </tr>*/}
-                                {/*})}*/}
+                                {this.state.searchedProjects.map((searchedProject,index)=>{
+                                    return <tr key={index}>
+                                        <td>{index+1}</td>
+                                        <td>{searchedProject.upabhokta_samitiko_naam},{searchedProject.upabokta_samitiko_thegana} </td>
+                                        <td>{searchedProject.aayojana_hune_woda}</td>
+                                        <td>{searchedProject.aayojana_suru_miti}</td>
+                                        <td>{searchedProject.aayojana_ante_miti}</td>
+                                        <td>{searchedProject.lagat_anuman}</td>
+                                        <td>{searchedProject.lagat_behorne_karyalay}</td>
+                                        <td>{searchedProject.lagat_behorne_upobhokta_samiti}</td>
+                                        <td>{searchedProject.gathan_vayeko_miti}</td>
+                                        <td>{searchedProject.name}</td>
+                                        <td>{searchedProject.adaxyako_number}</td>
+                                    </tr>
+                                })}
                             </table>
                         </div>
                     </div>

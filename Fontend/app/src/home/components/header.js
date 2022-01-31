@@ -56,6 +56,12 @@ export class Header extends React.Component{
                             <div id="title">अपलोड डकुमेन्ट</div>
                         </Link>
                     </div>
+                    <div className="item">
+                        <Link to='/setting'>
+                            <img src={require('./../../icons/document-give.svg').default}/>
+                            <div id="title">सेटिङ</div>
+                        </Link>
+                    </div>
                 </div>
             </div>
         );

@@ -14,8 +14,9 @@ class CreatePadadhikariPadaOptionsTable extends Migration
     public function up()
     {
         Schema::create('padadhikari_pada_options', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('pada');
+            $table->tinyInteger('level')->unsigned();
         });
     }
 

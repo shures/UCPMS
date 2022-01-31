@@ -10,65 +10,88 @@ export class Report extends React.Component{
         super();
         this.state = {
             projects:[],
-            searchData:{
-                aa_ba:'',
-                aayojana_naam:'',
+
+            searchingCategory:{
                 aayojana_hune_woda:'',
+            },
+            searchingValue:{
+                upabhokta_samitiko_naam:'',
                 aayojana_suru_miti:'',
                 aayojana_ante_miti:'',
                 aayojana_bajet_mathi:'',
                 aayojana_bajet_tala:'',
-                adaxya_naam:'',
-                ppa_naam:'',
+                name:'',
             },
-            showOption:'search'
+            showOption:'search',
+            searchedProjects:[],
+            wardOptions:[],
         }
         this.handleSearch=this.handleSearch.bind(this);
         this.handleUpdate=this.handleUpdate.bind(this);
+        this.handleCategoryChange = this.handleCategoryChange.bind(this);
     }
-    handleUpdate(event){
+    handleCategoryChange(event){
         let value = event.target.value;
         let name = event.target.name;
-        let searchData= this.state.searchData;
-        if(name==="aa_ba"){
-           searchData.aa_ba = value;
-        }
-        if(name==="aayojana_naam"){
-            searchData.aayojana_naam= value;
-        }
+        let searchingCategory= this.state.searchingCategory;
         if(name==="aayojana_hune_woda"){
-            searchData.aayojana_hune_woda = value;
+            searchingCategory.aayojana_hune_woda = value;
         }
-        if(name==="aayojana_suru_miti"){
-            searchData.aayojana_suru_miti = value;
-        }
-        if(name==="aayojana_ante_miti"){
-            searchData.aayojana_ante_miti = value;
-        }
-        if(name==="aayojana_bajet_mathi"){
-            searchData.aayojana_bajet_mathi = value;
-        }
-        if(name==="aayojana_bajet_tala"){
-            searchData.aayojana_bajet_tala = value;
-        }
-        if(name==="adaxya_naam"){
-            searchData.adaxya_naam = value;
-        }
-        if(name==="ppa_naam"){
-            searchData.ppa_naam = value;
-        }
-        this.setState({searchData:searchData});
+        this.setState({searchingCategory:searchingCategory});
+    }
+    handleUpdate(event){
+        var value = event.target.value;
+        var name = event.target.name;
+        let searchingValue= this.state.searchingValue;
+        searchingValue.upabhokta_samitiko_naam = '';
+        searchingValue.name = '';
+        searchingValue.aayojana_suru_miti = '';
+        searchingValue.aayojana_ante_miti = '';
+        searchingValue.aayojana_bajet_mathi = '';
+        searchingValue.aayojana_bajet_tala = '';
+        searchingValue.ppa_naam = '';
+        this.setState({searchingValue:searchingValue},()=>{
+            let searchingValue= this.state.searchingValue;
+            if(name==="upabhokta_samitiko_naam"){
+                searchingValue.upabhokta_samitiko_naam = value;
+            }
+            if(name==="aayojana_suru_miti"){
+                searchingValue.aayojana_suru_miti = value;
+            }
+            if(name==="aayojana_ante_miti"){
+                searchingValue.aayojana_ante_miti = value;
+            }
+            if(name==="aayojana_bajet_mathi"){
+                searchingValue.aayojana_bajet_mathi = value;
+            }
+            if(name==="aayojana_bajet_tala"){
+                searchingValue.aayojana_bajet_tala = value;
+            }
+            if(name==="name"){
+                searchingValue.name = value;
+            }
+            this.setState({searchingValue:searchingValue});
+        });
     }
     handleSearch(){
-        axios({
-            method: 'post',
-            url: localStorage.getItem('server')+'api/getProjects',
-            data: this.state.searchData,
-        }).then((response)=> {
-            console.log(response.data);
-        }).catch((res)=>{
-
-        })
+        this.setState({searchedProjects: []},()=>{
+            let searchedProjects = this.state.searchedProjects;
+            this.state.projects.forEach((item,index,arr)=>{
+                if(this.state.searchingValue.upabhokta_samitiko_naam!=='' && parseInt(item.aayojana_hune_woda)===parseInt(this.state.searchingCategory.aayojana_hune_woda) && item.upabhokta_samitiko_naam.includes(this.state.searchingValue.upabhokta_samitiko_naam)){
+                    searchedProjects.push(item);
+                }
+                if(this.state.searchingValue.name!=='' && parseInt(item.aayojana_hune_woda)===parseInt(this.state.searchingCategory.aayojana_hune_woda) && item.name.includes(this.state.searchingValue.name)){
+                    searchedProjects.push(item);
+                }
+                if(this.state.searchingValue.aayojana_bajet_mathi!=='' && parseInt(item.aayojana_hune_woda)===parseInt(this.state.searchingCategory.aayojana_hune_woda) && item.lagat_anuman>=this.state.searchingValue.aayojana_bajet_mathi){
+                    searchedProjects.push(item);
+                }
+                if(this.state.searchingValue.aayojana_bajet_tala!=='' && parseInt(item.aayojana_hune_woda)===parseInt(this.state.searchingCategory.aayojana_hune_woda) && item.lagat_anuman<=this.state.searchingValue.aayojana_bajet_tala){
+                    searchedProjects.push(item);
+                }
+            });
+            this.setState({searchedProjects: searchedProjects});
+        });
     }
     componentDidMount() {
         axios({
@@ -77,7 +100,19 @@ export class Report extends React.Component{
             data: {},
         }).then((response)=> {
             console.log(response.data);
-            this.setState({projects:response.data});
+            this.setState({projects:response.data,searchedProjects:response.data});
+        }).catch((res)=>{
+
+        });
+        axios({
+            method: 'post',
+            url: localStorage.getItem('server')+'api/getOptions',
+            data: {options:'ward'},
+        }).then((response)=> {
+            let wardOptions = response.data.ward_options;
+            let searchingCategory = this.state.searchingCategory;
+            searchingCategory.aayojana_hune_woda = wardOptions[0].ward_number;
+            this.setState({wardOptions:wardOptions,searchingCategory:searchingCategory});
         }).catch((res)=>{
 
         })
@@ -89,45 +124,43 @@ export class Report extends React.Component{
                 <div id="container">
                     <div id="title">
                         योजनाहरुको प्रतिवेदन
+                        {this.context.aarthik_barsa}
                     </div>
                     {this.state.showOption==="search" ?
                     <div id="project">
                         <div id="search_options">
                             <div className="item">
-                                <span>आ.व.</span>
-                                <input name="aa_ba" value={this.state.searchData.aa_ba} type="text" onChange={this.handleUpdate} placeholder="आ.व."/>
-                            </div>
-                            <div className="item">
-                                <span>आयोजनाको नाम</span>
-                                <input name="aayojana_naam" value={this.state.searchData.aayojana_naam} onChange={this.handleUpdate} type="text" placeholder="आयोजनाको नाम"/>
-                            </div>
-                            <div className="item">
-                                <span>वडा नं.</span>
-                                <input name="aayojana_hune_woda" value={this.state.searchData.aayojana_hune_woda} onChange={this.handleUpdate} type="text" placeholder="वडा नं."/>
+                                <span>उपभोक्ता समितिको नाम</span>
+                                <input name="upabhokta_samitiko_naam" value={this.state.searchingValue.upabhokta_samitiko_naam} onChange={this.handleUpdate} type="text" placeholder="उपभोक्ता समितिको नाम"/>
                             </div>
                             <div className="item">
                                 <span>आयोजनाको शुरु मिति</span>
-                                <input name='aayojana_suru_miti' value={this.state.searchData.aayojana_suru_miti} onChange={this.handleUpdate}  type="text" placeholder="आयोजनाको शुरु मिति"/>
+                                <input name='aayojana_suru_miti' value={this.state.searchingValue.aayojana_suru_miti} onChange={this.handleUpdate}  type="text" placeholder="आयोजनाको शुरु मिति"/>
                             </div>
                             <div className="item">
                                 <span>आयोजनाको अन्त्य मिति</span>
-                                <input name='aayojana_ante_miti' value={this.state.searchData.aayojana_ante_miti} onChange={this.handleUpdate}  type="text" placeholder="आयोजनाको अन्त्य मिति"/>
+                                <input name='aayojana_ante_miti' value={this.state.searchingValue.aayojana_ante_miti} onChange={this.handleUpdate}  type="text" placeholder="आयोजनाको अन्त्य मिति"/>
                             </div>
                             <div className="item">
                                 <span>आयोजना बजेट भन्दा माथि</span>
-                                <input name='aayojana_bajet_mathi' value={this.state.searchData.aayojana_bajet_mathi} onChange={this.handleUpdate} type="text" placeholder="आयोजना बजेट भन्दा माथि"/>
+                                <input name='aayojana_bajet_mathi' value={this.state.searchingValue.aayojana_bajet_mathi} onChange={this.handleUpdate} type="text" placeholder="आयोजना बजेट भन्दा माथि"/>
                             </div>
                             <div className="item">
                                 <span>आयोजना बजेट भन्दा तल</span>
-                                <input name='aayojana_bajet_tala' value={this.state.searchData.aayojana_bajet_tala} onChange={this.handleUpdate}  type="text" placeholder="आयोजना बजेट भन्दा तल"/>
+                                <input name='aayojana_bajet_tala' value={this.state.searchingValue.aayojana_bajet_tala} onChange={this.handleUpdate}  type="text" placeholder="आयोजना बजेट भन्दा तल"/>
                             </div>
                             <div className="item">
                                 <span>अध्यक्षको नाम थर</span>
-                                <input name='adaxya_naam' value={this.state.searchData.adaxya_naam} onChange={this.handleUpdate} type="text" placeholder="अध्यक्षको नाम थर"/>
+                                <input name='name' value={this.state.searchingValue.name} onChange={this.handleUpdate} type="text" placeholder="अध्यक्षको नाम थर"/>
                             </div>
+                        </div>
+                        <div id='searchCategory'>
                             <div className="item">
-                                <span>प्रमुख प्रशासकीय अधिकृत</span>
-                                <input name='ppa_naam' value={this.state.searchData.ppa_naam} onChange={this.handleUpdate} type="text" placeholder="प्रमुख प्रशासकीय अधिकृत"/>
+                                <select name="aayojana_hune_woda" onChange={this.handleCategoryChange}>
+                                    {this.state.wardOptions.map((wardOption,index)=>{
+                                        return <option key={index} value={wardOption.ward_number}>{wardOption.ward_number} नं. वडा, {wardOption.ward_name}</option>
+                                    })}
+                                </select>
                             </div>
                         </div>
                         <div id="controls">
@@ -153,19 +186,19 @@ export class Report extends React.Component{
                                     <th>सम्पादन</th>
                                     <th>डिलेट</th>
                                 </tr>
-                                {this.state.projects.map((project,index)=>{
+                                {this.state.searchedProjects.map((searchedProject,index)=>{
                                     return <tr key={index}>
                                         <td>{index+1}</td>
-                                        <td>{project.upabhokta_samitiko_naam},{project.upabokta_samitiko_thegana} </td>
-                                        <td>{project.aayojana_hune_woda}</td>
-                                        <td>{project.aayojana_suru_miti}</td>
-                                        <td>{project.aayojana_ante_miti}</td>
-                                        <td>{project.lagat_anuman}</td>
-                                        <td>{project.lagat_behorne_karyalay}</td>
-                                        <td>{project.lagat_behorne_upobhokta_samiti}</td>
-                                        <td>{project.gathan_vayeko_miti}</td>
-                                        <td>{project.name}</td>
-                                        <td>{project.adaxyako_number}</td>
+                                        <td>{searchedProject.upabhokta_samitiko_naam},{searchedProject.upabokta_samitiko_thegana} </td>
+                                        <td>{searchedProject.aayojana_hune_woda}</td>
+                                        <td>{searchedProject.aayojana_suru_miti}</td>
+                                        <td>{searchedProject.aayojana_ante_miti}</td>
+                                        <td>{searchedProject.lagat_anuman}</td>
+                                        <td>{searchedProject.lagat_behorne_karyalay}</td>
+                                        <td>{searchedProject.lagat_behorne_upobhokta_samiti}</td>
+                                        <td>{searchedProject.gathan_vayeko_miti}</td>
+                                        <td>{searchedProject.name}</td>
+                                        <td>{searchedProject.adaxyako_number}</td>
                                         <th><img src={require('./../../icons/print.svg').default}/></th>
                                         <th><img src={require('./../../icons/edit-box.svg').default}/> </th>
                                         <th><img src={require('./../../icons/delete.svg').default}/> </th>
@@ -180,7 +213,7 @@ export class Report extends React.Component{
                                 <ReactToPrint trigger={() => {return <button>प्रिन्ट गर्नुहोस </button>}} content={() => this.componentRef}/>
                                 <button onClick={()=>{this.setState({showOption:'search'})}}>रद्ध गर्नुहोस</button>
                             </div>
-                            <ReportPrintPreview projects={this.state.projects} ref={el => (this.componentRef = el)}/>
+                            <ReportPrintPreview projects={this.state.searchedProjects} ref={el => (this.componentRef = el)}/>
                         </Fragment>
                     : null }
                 </div>

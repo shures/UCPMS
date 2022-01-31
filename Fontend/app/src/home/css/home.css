@@ -29,8 +29,18 @@
     flex-direction: column;
 }
 #home>#container>#home_header>#title>span{
-
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
 }
+#home>#container>#home_header>#title>span>b{
+    color:black;
+    font-size: 18px;
+    margin-left: 10px;
+    color:rgba(0,0,0,0.6);
+}
+
 #home>#container>#home_header>#title>span:nth-child(1){
     font-size: 25px;
     font-weight: bold;
@@ -152,7 +162,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: left;
     margin-top: 10px;
 }
 #home>#container>#report>#left>#ward_report>.item{
@@ -164,6 +174,7 @@
     background-color: white;
     padding: 1%;
     cursor: pointer;
+    margin-right: 5px;
 }
 #home>#container>#report>#left>#ward_report>.item>div{
     text-align: left;
@@ -176,16 +187,46 @@
 }
 #home>#container>#report>#right{
     width: 19.5%;
-    display: flex;
-    flex-direction: row;
     margin-left: 0.5%;
-}
-#home>#container>#report>#right>#foo{
-    background-color: white;
-    width: 96%;
-    border-radius: 2px;
     padding-left: 2%;
     padding-right: 2%;
+    background-color: white;
+}
+#home>#container>#report>#right>#title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+#home>#container>#report>#right>#data{
+    margin-top: 10px;
+}
+#home>#container>#report>#right>#data>.item{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+}
+#home>#container>#report>#right>#data>.item>#name{
+
+}
+#home>#container>#report>#right>#data>.item>#bar{
+    width: 100%;
+    background-color:lightgray;
+    height: 13px;
+    margin-top: 7px;
+    border-radius: 5px;
+    font-size: 10px;
+}
+#home>#container>#report>#right>#data>.item>#bar>#progress{
+    width: 50%;
+    background-color:#0f6674;
+    height: 13px;
+    border-radius: 2px;
+}
+#home>#container>#report>#right>#data>.item{
+
 }
 #home>#container>#data_control{
     margin-top: 10px;

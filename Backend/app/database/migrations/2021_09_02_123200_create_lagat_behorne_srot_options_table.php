@@ -14,7 +14,7 @@ class CreateLagatBehorneSrotOptionsTable extends Migration
     public function up()
     {
         Schema::create('lagat_behorne_srot_options', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('lagat_behorne_srot');
         });
     }

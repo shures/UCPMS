@@ -35,3 +35,8 @@ Route::post("searchProject",[ProjectDataController::class,'searchProject']);
 Route::post("getSifaris",[ProjectDataController::class,'getSifaris']);
 Route::post("getProjects",[ProjectDataController::class,'getProjects']);
 Route::post("getBarChart",[ProjectDataController::class,'getBarChart']);
+Route::post("getMunReport",[ProjectDataController::class,'getMunReport']);
+Route::post("getWardReport",[ProjectDataController::class,'getWardReport']);
+Route::post("putSetting",[ProjectOptionController::class,'putSetting']);
+Route::post("getDetail",[ProjectDataController::class,'getDetail']);
+Route::post("getSetting",[ProjectOptionController::class,'getSetting']);

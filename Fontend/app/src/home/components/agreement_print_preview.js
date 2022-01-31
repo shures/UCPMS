@@ -4,21 +4,43 @@ import './../css/agreement_print_preview.css';
 import axios from 'axios';
 import {Header} from "./header";
 import ReactToPrint from 'react-to-print';
+import {Link} from "react-router-dom";
 export class AgreementPrintPreview extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            project:[]
+            dataReceived:{
+                padadhikariharu:[],
+                project:[],
+            },
+            adaxya_detail:{
+                name:'',
+                pada:'',
+            }
+            
         }
     }
     componentDidMount() {
+        // this.props.location.id;
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getProject',
             data:{'id': 1},
         }).then((response)=> {
             console.log(response.data);
-            this.setState({project:response.data[1]});
+            let dataReceived = this.state.dataReceived;
+            dataReceived.padadhikariharu = response.data[2];
+            dataReceived.project = response.data[1];
+            this.setState({dataReceived:dataReceived});
+            response.data[2].forEach((item,index,arr)=>{
+                if(item.level===1){
+                    let adaxya_detail  = this.state.adaxya_detail;
+                    adaxya_detail.name = item.name;
+                    adaxya_detail.pada = item.pada;
+                    adaxya_detail.thegana = item.thegana;
+                    this.setState({adaxya_detail:adaxya_detail})
+                }
+            })
         }).catch((res) => {
             this.setState({status:'Something went wrong.'});
         });
@@ -35,6 +57,7 @@ export class AgreementPrintPreview extends React.Component{
                             }}
                             content={() => this.componentRef}
                         />
+                        <Link to={{pathname:'/project_entry',id:1}}>सम्पादन गर्नुहोस</Link>
                     </div>
                     <div id="agreement_a4" ref={el => (this.componentRef = el)}>
                         <div id="agreement_header">
@@ -58,11 +81,11 @@ export class AgreementPrintPreview extends React.Component{
                                         <table id="simple">
                                             <tr>
                                                 <td><span>१) नाम : </span></td>
-                                                <td><b>{this.state.project.upabhokta_samitiko_naam}</b></td>
+                                                <td><b>{this.state.dataReceived.project.upabhokta_samitiko_naam}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>२) ठेगाना :</span></td>
-                                                <td><b>{this.state.project.upabokta_samitiko_thegana}</b></td>
+                                                <td><b>{this.state.dataReceived.project.upabokta_samitiko_thegana}</b></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -75,19 +98,19 @@ export class AgreementPrintPreview extends React.Component{
                                         <table id="simple">
                                             <tr>
                                                 <td><span>१) नाम :</span></td>
-                                                <td><b>{this.state.project.aayojanako_naam}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojanako_naam}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>२) आयोजना स्थल :</span></td>
-                                                <td><b>{this.state.project.aayojanako_sthal}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojanako_sthal}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>३) उदेश्य :</span></td>
-                                                <td><b>{this.state.project.aayojanako_udeshya}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojanako_udeshya}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>४) आयोजना सुरु हुने मिति :</span></td>
-                                                <td><b>{this.state.project.aayojana_suru_miti}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojana_suru_miti}</b></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -99,7 +122,7 @@ export class AgreementPrintPreview extends React.Component{
                                 </div>
                                 <div className="title">
                                     <div id="name">
-                                        क) लागत अनुमान रु : <b>{this.state.project.lagat_anuman}</b>
+                                        क) लागत अनुमान रु : <b>{this.state.dataReceived.project.lagat_anuman}</b>
                                     </div>
                                 </div>
                                 <div className="title">
@@ -110,15 +133,15 @@ export class AgreementPrintPreview extends React.Component{
                                         <table id="simple">
                                             <tr>
                                                 <td><span>१) कार्यलय :</span></td>
-                                                <td><b>{this.state.project.lagat_behorne_karyalay}</b></td>
+                                                <td><b>{this.state.dataReceived.project.lagat_behorne_karyalay}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>२) उपभोत्ता समिति :</span></td>
-                                                <td><b>{this.state.project.lagat_behorne_upobhokta_samiti}</b></td>
+                                                <td><b>{this.state.dataReceived.project.lagat_behorne_upobhokta_samiti}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>३) अन्य</span></td>
-                                                <td><b>{this.state.project.lagat_behorne_anne}</b></td>
+                                                <td><b>{this.state.dataReceived.project.lagat_behorne_anne}</b></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -133,25 +156,25 @@ export class AgreementPrintPreview extends React.Component{
                                                 <th>क्र.स.</th> <th>बस्तुगत अनुदानको विवरण</th>  <th>सामाग्रीको नाम</th>  <th>एकाई</th>
                                             </tr>
                                             <tr>
-                                                <td>१</td><td>संघबाट</td><td><b>{this.state.project.bastugat_anudan_sangbata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_sangbata_ekai}</b></td>
+                                                <td>१</td><td>संघबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_sangbata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_sangbata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>२</td><td>प्रदेशबाट</td><td><b>{this.state.project.bastugat_anudan_pradeshbata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_pradeshbata_ekai}</b></td>
+                                                <td>२</td><td>प्रदेशबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_pradeshbata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_pradeshbata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>३</td><td>स्थानीय तहबाट</td><td><b>{this.state.project.bastugat_anudan_sthaniyebata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_sthaniyebata_ekai}</b></td>
+                                                <td>३</td><td>स्थानीय तहबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_sthaniyebata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_sthaniyebata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>४</td><td>गैह्रसरकारी तहबाट</td><td><b>{this.state.project.bastugat_anudan_gairasarakaribata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_gairasarakaribata_ekai}</b></td>
+                                                <td>४</td><td>गैह्रसरकारी तहबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_gairasarakaribata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_gairasarakaribata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>५</td><td>विदेशी दातृ निकायबाट</td><td><b>{this.state.project.bastugat_anudan_bideshbata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_bideshbata_ekai}</b></td>
+                                                <td>५</td><td>विदेशी दातृ निकायबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_bideshbata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_bideshbata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>६</td><td>उपभोक्ता समितिबाट</td><td><b>{this.state.project.bastugat_anudan_upobhoktasamitibata_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_upokhoktasamitibata_ekai}</b></td>
+                                                <td>६</td><td>उपभोक्ता समितिबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_upobhoktasamitibata_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_upokhoktasamitibata_ekai}</b></td>
                                             </tr>
                                             <tr>
-                                                <td>६</td><td>अन्य निकायबाट</td><td><b>{this.state.project.bastugat_anudan_anne_samagriko_naam}</b></td><td><b>{this.state.project.bastugat_anudan_anne_ekai}</b></td>
+                                                <td>६</td><td>अन्य निकायबाट</td><td><b>{this.state.dataReceived.project.bastugat_anudan_anne_samagriko_naam}</b></td><td><b>{this.state.dataReceived.project.bastugat_anudan_anne_ekai}</b></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -164,15 +187,15 @@ export class AgreementPrintPreview extends React.Component{
                                         <table id="simple">
                                             <tr>
                                                 <td><span>१) घरपरियार संख्या :</span></td>
-                                                <td><b>{this.state.project.aayojana_labhanbit_gharpariwar_sangkhya}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojana_labhanbit_gharpariwar_sangkhya}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>२) जनसंख्या :</span></td>
-                                                <td><b>{this.state.project.aayojana_labhanbit_janasankhya}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojana_labhanbit_janasankhya}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>३) संगठित संख्या :</span></td>
-                                                <td><b>{this.state.project.aayojana_labhanbit_sangathit_sangkhya}</b></td>
+                                                <td><b>{this.state.dataReceived.project.aayojana_labhanbit_sangathit_sangkhya}</b></td>
                                             </tr>
                                             <tr>
                                                 <td><span>३) अन्य :</span></td>
@@ -188,7 +211,7 @@ export class AgreementPrintPreview extends React.Component{
                                 </div>
                                 <div className="title">
                                     <div id="name">
-                                        क) गठन भएको मिति : <b>{this.state.project.gathan_vayeko_miti}</b>
+                                        क) गठन भएको मिति : <b>{this.state.dataReceived.project.gathan_vayeko_miti}</b>
                                     </div>
                                 </div>
                                 <div className="title">
@@ -200,51 +223,23 @@ export class AgreementPrintPreview extends React.Component{
                                             <tr>
                                                 <th>क्र.स.</th><th>पद</th> <th>नाम थर</th> <th>ठेगाना</th> <th>नना.प्र.प.नं </th> <th>जिल्ला</th>
                                             </tr>
-                                            <tr>
-                                                <th>१</th><td>अध्यक्ष</td><td><b>{this.state.project.adaxya_name}</b></td><td><b>{this.state.project.adaxya_thegana }</b></td><td><b>{this.state.project.adaxya_na_number}</b></td><td><b>{this.state.project.adaxya_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>२</th><td>सचिव</td><td><b>{this.state.project.sachib_name}</b></td><td><b>{this.state.project.sachib_thegana }</b></td><td><b>{this.state.project.sachib_na_number}</b></td><td><b>{this.state.project.sachib_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>३</th><td>कोषादध्क्ष</td><td><b>{this.state.project.kosha_name}</b></td><td><b>{this.state.project.kosha_thegana }</b></td><td><b>{this.state.project.kosha_na_number}</b></td><td><b>{this.state.project.kosha_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>४</th><td>सदस्य</td><td><b>{this.state.project.sadasshya1_name}</b></td><td><b>{this.state.project.sadasshya1_thegana}</b></td><td><b>{this.state.project.sadasshya1_na_number}</b></td><td><b>{this.state.project.sadasshya1_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>५</th><td>सदस्य</td><td><b>{this.state.project.sadasshya2_name}</b></td><td><b>{this.state.project.sadasshya2_thegana}</b></td><td><b>{this.state.project.sadasshya2_na_number}</b></td><td><b>{this.state.project.sadasshya2_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>६</th><td>सदस्य</td><td><b>{this.state.project.sadasshya3_name}</b></td><td><b>{this.state.project.sadasshya3_thegana}</b></td><td><b>{this.state.project.sadasshya3_na_number}</b></td><td><b>{this.state.project.sadasshya3_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>७</th><td>सदस्य</td><td><b>{this.state.project.sadasshya4_name}</b></td><td><b>{this.state.project.sadasshya4_thegana}</b></td><td><b>{this.state.project.sadasshya4_na_number}</b></td><td><b>{this.state.project.sadasshya4_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>८</th><td>सदस्य</td><td><b>{this.state.project.sadasshya5_name}</b></td><td><b>{this.state.project.sadasshya5_thegana}</b></td><td><b>{this.state.project.sadasshya5_na_number}</b></td><td><b>{this.state.project.sadasshya5_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>९</th><td>सदस्य</td><td><b>{this.state.project.sadasshya6_name}</b></td><td><b>{this.state.project.sadasshya6_thegana}</b></td><td><b>{this.state.project.sadasshya6_na_number}</b></td><td><b>{this.state.project.sadasshya6_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>१०</th><td>सदस्य</td><td><b>{this.state.project.sadasshya7_name}</b></td><td><b>{this.state.project.sadasshya7_thegana}</b></td><td><b>{this.state.project.sadasshya7_na_number}</b></td><td><b>{this.state.project.sadasshya7_jilla}</b></td>
-                                            </tr>
-                                            <tr>
-                                                <th>११</th><td>सदस्य</td><td><b>{this.state.project.sadasshya8_name}</b></td><td><b>{this.state.project.sadasshya8_thegana}</b></td><td><b>{this.state.project.sadasshya8_na_number}</b></td><td><b>{this.state.project.sadasshya8_jilla}</b></td>
-                                            </tr>
+                                            {this.state.dataReceived.padadhikariharu.map((item,index)=>{
+                                                return <tr key={index}>
+                                                    <th>{index+1}</th><td>{item.pada}</td><td><b>{item.name}</b></td><td><b>{item.thegana}</b></td><td><b>{item.na_na}</b></td><td><b>{item.jilla}</b></td>
+                                                </tr>
+                                            })}
                                         </table>
                                     </div>
                                 </div>
                                 <div className="title">
                                     <div id="name">
-                                        क) उपभोक्ता समिति गठन गर्दा उपस्थित लाभान्वितको संख्या  : <b>{this.state.project.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya}</b>
+                                        क) उपभोक्ता समिति गठन गर्दा उपस्थित लाभान्वितको संख्या  : <b>{this.state.dataReceived.project.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya}</b>
                                     </div>
                                 </div>
                             </div>
                             <div className="item">
                                 <div id="name">
-                                    ४) आयोजना संचालन सम्बन्धि अनुभव वर्ष : <b>{this.state.project.anubhav_barsa}</b>
+                                    ४) आयोजना संचालन सम्बन्धि अनुभव वर्ष : <b>{this.state.dataReceived.project.anubhav_barsa}</b>
                                 </div>
                             </div>
                             <div className="item">
@@ -257,16 +252,16 @@ export class AgreementPrintPreview extends React.Component{
                                             <th>किस्ताको क्रम</th><th>मिति</th><th>किस्ता रकम</th><th>निर्माण सामग्री परिमाण</th><th>कैफियत</th>
                                         </tr>
                                         <tr>
-                                            <td>प्रथम</td><td><b>{this.state.project.pratham_miti}</b></td><td><b>{this.state.project.pratham_rakam}</b></td><td><b>{this.state.project.pratham_samagriko_pariman}</b></td><td><b>{this.state.project.pratham_kaifiyet}</b></td>
+                                            <td>प्रथम</td><td><b>{this.state.dataReceived.project.pratham_miti}</b></td><td><b>{this.state.dataReceived.project.pratham_rakam}</b></td><td><b>{this.state.dataReceived.project.pratham_samagriko_pariman}</b></td><td><b>{this.state.dataReceived.project.pratham_kaifiyet}</b></td>
                                         </tr>
                                         <tr>
-                                            <td>दोस्रो</td><td><b>{this.state.project.dorshro_miti}</b></td><td><b>{this.state.project.dorshro_rakam}</b></td><td><b>{this.state.project.dorshro_samagriko_pariman}</b></td><td><b>{this.state.project.dorshro_kaifiyet}</b></td>
+                                            <td>दोस्रो</td><td><b>{this.state.dataReceived.project.dorshro_miti}</b></td><td><b>{this.state.dataReceived.project.dorshro_rakam}</b></td><td><b>{this.state.dataReceived.project.dorshro_samagriko_pariman}</b></td><td><b>{this.state.dataReceived.project.dorshro_kaifiyet}</b></td>
                                         </tr>
                                         <tr>
-                                            <td>तेस्रो</td><td><b>{this.state.project.teshro_miti}</b></td><td><b>{this.state.project.teshro_rakam}</b></td><td><b>{this.state.project.teshro_samagriko_pariman}</b></td><td><b>{this.state.project.teshro_kaifiyet}</b></td>
+                                            <td>तेस्रो</td><td><b>{this.state.dataReceived.project.teshro_miti}</b></td><td><b>{this.state.dataReceived.project.teshro_rakam}</b></td><td><b>{this.state.dataReceived.project.teshro_samagriko_pariman}</b></td><td><b>{this.state.dataReceived.project.teshro_kaifiyet}</b></td>
                                         </tr>
                                         <tr>
-                                            <td>जम्मा</td><td><b>{this.state.project.jamma_miti}</b></td><td><b>{this.state.project.jamma_rakam}</b></td><td><b>{this.state.project.jamma_samagriko_pariman}</b></td><td><b>{this.state.project.jamma_kaifiyet}</b></td>
+                                            <td>जम्मा</td><td><b>{this.state.dataReceived.project.jamma_miti}</b></td><td><b>{this.state.dataReceived.project.jamma_rakam}</b></td><td><b>{this.state.dataReceived.project.jamma_samagriko_pariman}</b></td><td><b>{this.state.dataReceived.project.jamma_kaifiyet}</b></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -279,27 +274,27 @@ export class AgreementPrintPreview extends React.Component{
                                     <table id="simple">
                                         <tr>
                                             <td><span>क ) आयोजना मर्मत सम्भारको जिम्मा लिने/समिति संस्थाको नाम :</span></td>
-                                            <td><b>{this.state.project.yojana_marmat_jimma_line_samiti}</b></td>
+                                            <td><b>{this.state.dataReceived.project.yojana_marmat_jimma_line_samiti}</b></td>
                                         </tr>
                                         <tr>
                                             <td><span>ख ) मर्मत सम्भारको सम्भावित श्रौत (छ छैन खुलाउने ) :</span></td>
-                                            <td><b>{this.state.project.marmat_sambhabit_srot}</b></td>
+                                            <td><b>{this.state.dataReceived.project.marmat_sambhabit_srot}</b></td>
                                         </tr>
                                         <tr>
                                             <td><span>ग ) जनश्रमदान : </span></td>
-                                            <td><b>{this.state.project.janasramdan}</b></td>
+                                            <td><b>{this.state.dataReceived.project.janasramdan}</b></td>
                                         </tr>
                                         <tr>
                                             <td><span>घ ) सेवा शुल्क : </span></td>
-                                            <td><b>{this.state.project.sewa_sulka}</b></td>
+                                            <td><b>{this.state.dataReceived.project.sewa_sulka}</b></td>
                                         </tr>
                                         <tr>
                                             <td><span>ङ ) दस्तुर चन्दाबाट : </span></td>
-                                            <td><b>{this.state.project.dastur_chandabata}</b></td>
+                                            <td><b>{this.state.dataReceived.project.dastur_chandabata}</b></td>
                                         </tr>
                                         <tr>
                                             <td><span> च ) अन्य केही भए : </span></td>
-                                            <td><b>{this.state.project.anne_kehi_vaye}</b></td>
+                                            <td><b>{this.state.dataReceived.project.anne_kehi_vaye}</b></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -311,7 +306,7 @@ export class AgreementPrintPreview extends React.Component{
                             </div>
                             <div id="head">उपभोत्ता समितिको जिम्मेवारी तथा पालना गर्नुपर्ने शर्तहरु :</div>
                             <ol>
-                                <li>आयोजना शुरु मिति <b>{this.state.project.aayojana_suru_miti}</b> देखि शुरु गरी मिति <b>{this.state.project.aayojana_ante_miti}</b> सम्ममा पुरा गर्नु पर्नेछ ।</li>
+                                <li>आयोजना शुरु मिति <b>{this.state.dataReceived.project.aayojana_suru_miti}</b> देखि शुरु गरी मिति <b>{this.state.dataReceived.project.aayojana_ante_miti}</b> सम्ममा पुरा गर्नु पर्नेछ ।</li>
                                 <li>प्राप्त रकम तथा निर्माण सामाग्री सम्बन्धित आयोजनाको उद्देश्यका लागि मात्र प्रयोग गर्नुपर्नेछ ।</li>
                                 <li>नगदी, जिन्सी सामानको प्राप्ती, खर्च र बाँकी तथा आयोजनाको प्रगति विवरण राख्नु पर्नेछ ।</li>
                                 <li>आम्दानी खर्चको विवरण र कार्यप्रगतिको जानकारी उपभोक्ता समूहमा छलफल गरी अर्को किस्ता माग गर्नु पर्नेछ ।</li>
@@ -353,19 +348,19 @@ export class AgreementPrintPreview extends React.Component{
                                         <td>दस्तखत :</td><td></td>
                                     </tr>
                                     <tr>
-                                        <td>नाम थर :</td><td><b>{this.state.project.adaxya_name}</b></td>
+                                        <td>नाम थर :</td><td><b>{this.state.adaxya_detail.name}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>पद :</td><td><b>अध्यक्ष</b></td>
+                                        <td>पद :</td><td><b>{this.state.adaxya_detail.pada}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>ठेगाना :</td><td><b>{this.state.project.adaxya_thegana}</b></td>
+                                        <td>ठेगाना :</td><td><b>{this.state.adaxya_detail.thegana}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>सम्पर्क नम्बर :</td><td><b>{this.state.project.adaxyako_number}</b></td>
+                                        <td>सम्पर्क नम्बर :</td><td><b>{this.state.dataReceived.project.adaxyako_number}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>मिति :</td><td><b>{this.state.project.aayojana_suru_miti}</b></td>
+                                        <td>मिति :</td><td><b>{this.state.dataReceived.project.aayojana_suru_miti}</b></td>
                                     </tr>
                                 </table>
                             </div>
@@ -378,7 +373,7 @@ export class AgreementPrintPreview extends React.Component{
                                         <td>दस्तखत : </td><td></td>
                                     </tr>
                                     <tr>
-                                        <td>नाम थर :</td><td><b>{this.state.project.pramukha_prashasakiyeko_name}</b></td>
+                                        <td>नाम थर :</td><td><b>{this.state.dataReceived.project.ppa_name}</b></td>
                                     </tr>
                                     <tr>
                                         <td>पद :</td><td><b>प्रमुख प्रशासकीयक अधिकृत</b></td>
@@ -387,10 +382,10 @@ export class AgreementPrintPreview extends React.Component{
                                         <td>ठेगाना :</td><td><b>थासाङ-२, कोबाङ</b></td>
                                     </tr>
                                     <tr>
-                                        <td>सम्पर्क नम्बर :</td><td><b>{this.state.project.pramukha_prashasakiyeko_number}</b></td>
+                                        <td>सम्पर्क नम्बर :</td><td><b>{this.state.dataReceived.project.ppa_number}</b></td>
                                     </tr>
                                     <tr>
-                                        <td>मिति :</td><td><b>{this.state.project.aayojana_suru_miti}</b></td>
+                                        <td>मिति :</td><td><b>{this.state.dataReceived.project.aayojana_suru_miti}</b></td>
                                     </tr>
                                 </table>
                             </div>
