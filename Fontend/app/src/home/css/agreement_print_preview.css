@@ -24,6 +24,10 @@
     background-color: dodgerblue;
     color:white;
 }
+#agreement_print_preview>#container>#title a{
+    text-decoration: none;
+    margin-left: 10px;
+}
 #agreement_print_preview>#container>#title>button:hover{
     color:white;
     background-color: green;

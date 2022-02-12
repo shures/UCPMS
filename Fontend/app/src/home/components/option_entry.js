@@ -1,132 +1,116 @@
+import {handleError} from "./helperFuntion";
 import React, {Fragment} from "react";
 import './../css/option_entry.css';
 import {Header} from "./header";
 import axios from "axios";
 let bs = require('bikram-sambat');
+
+
 export class OptionEntry extends React.Component{
     constructor() {
         super();
         this.state = {
-            data:{
-                bank_name:'प्रभु बैङ्क',
-                bank_thegana:'थासाङ-3, कोबाङ',
-                bank_sakha:'थासाङ',
-
-                ppa_name: '',
-                ppa_number: '',
-
-                lagat_behorne_srot:'',
-
-                padadhikari_pada:'',
-                padadhikari_level:'',
-
-                ward_number:'',
-                ward_name:'',
-
-                aa_ba : '',
-                yojana_sangkhya : '',
-                yojana_sangkhya_ward_number:'1',
-
-                selected_option:1,
-                isEdit:false,
-                id:'',
+            biwaran:{
+                selectedBiwaran:'',
+                bank:{
+                    name:'',
+                    addr:'',
+                    branch:'',
+                },
+                ppa:{
+                    name:'santosh',
+                    phone:'45545454',
+                },
+                lagatBehorneSrot:{
+                    name:'hello srot'
+                },
+                padadhikariPada:{
+                    pada:'',
+                    level:'',
+                },
+                ward:{
+                    name:'',
+                    number:'',
+                },
+                totalWardProject:{
+                    wardId:'',
+                    total:'',
+                }
+            },
+            dataReceived:{
+                wards:[],
             },
 
             errors:[],
-            status:'',
-            isRecordUpdated:true,
-            ward_options:[],
-            aa_ba_list:[],
+            message:'',
+
+            isDetailUpdated:true,
+            aaBaList:[],
 
         }
-        this.updateText=this.updateText.bind(this);
+        this.handleValueChange=this.handleValueChange.bind(this);
         this.handleSubmit =  this.handleSubmit.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
     }
     componentDidMount() {
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getOptions',
-            data: {options:'ward',fy:this.state.aa_ba},
+            data: {detail:'ward'},
         }).then((response)=> {
-            console.log(response.data.ward_options);
-            this.setState({ward_options:response.data.ward_options});
+            let dataReceived = this.state.dataReceived;
+            dataReceived.wards = response.data;
+            this.setState({dataReceived:dataReceived});
         }).catch((res) => {
 
         });
 
-
-        let english_date = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`;
-        let fy_year = bs.toBik_euro(english_date);
-        let year = parseInt(fy_year.substr(2, 2));
-        let nextYear = parseInt(year)+1;
-        let fy = year+'/'+nextYear;
-
-        let aa_ba_list = this.state.aa_ba_list;
+        var currentAaba = parseInt(localStorage.getItem('currentAaBa'));
+        var aaBaList = this.state.aaBaList;
         for(let i=0;i<=5;i++){
-            aa_ba_list.push(year-i+'/'+parseInt(nextYear-i));
+            aaBaList.push(currentAaba+i+'/'+(currentAaba+1+i).toString().substr(2,2));
         }
-        this.setState({aa_ba_list:aa_ba_list});
+        this.setState({aaBaList:aaBaList});
+
     }
-    handleEdit(option,index){
-        // let data = this.state.data;
-        // if(option==='bank'){
-        //     data.bank_name = this.state.bank_options[index].bank_name;
-        //     data.bank_sakha = this.state.bank_options[index].bank_sakha;
-        //     data.bank_thegana = this.state.bank_options[index].bank_thegana;
-        //     data.id = this.state.bank_options[index].id;
-        //     data.isEdit = true;
-        // }
-        // this.setState({data:data});
-    }
-    updateText(event){
+    handleValueChange(event){
         this.setState({errors:[]});
-        this.setState({status:''});
+        this.setState({message:''});
         let name = event.target.name;
         let value = event.target.value;
-        let data = this.state.data;
-        if(name==="select"){data.selected_option=parseInt(value)}
-        if(name==="bank_name"){data.bank_name=value;}
-        if(name==="bank_thegana"){data.bank_thegana=value}
-        if(name==="bank_sakha"){data.bank_sakha=value;}
-        if(name==="ppa_name"){data.ppa_name=value;}
-        if(name==="ppa_number"){data.ppa_number=value;}
-        if(name==="lagat_behorne_srot"){data.lagat_behorne_srot=value;}
-        if(name==="padadhikari_pada"){data.padadhikari_pada=value;}
-        if(name==="padadhikari_level"){data.padadhikari_level=value;}
-        if(name==="ward_name"){data.ward_name=value;}
-        if(name==="ward_number"){data.ward_number=value;}
-        if(name==="aarthik_barsa"){data.aarthik_barsa=value;}
-        if(name==="yojana_sangkhya"){data.yojana_sangkhya=value;}
-        if(name==="yojana_sangkhya_ward_number"){data.yojana_sangkhya_ward_number=value;}
-        this.setState({data:data});
+        let biwaran = this.state.biwaran;
+        if(name==="selectedBiwaran"){biwaran.selectedBiwaran=value}
+        if(name==="bankName"){biwaran.bank.name=value;}
+        if(name==="bankAddr"){biwaran.bank.addr=value}
+        if(name==="bankBranch"){biwaran.bank.branch=value;}
+        if(name==="ppaName"){biwaran.ppa.name=value;}
+        if(name==="ppaPhone"){biwaran.ppa.phone=value;}
+        if(name==="lagatBehorneSrotName"){biwaran.lagatBehorneSrot.name=value;}
+        if(name==="padadhikariPadaName"){biwaran.padadhikariPada.pada=value;}
+        if(name==="padadhikariPadaLevel"){biwaran.padadhikariPada.level=value;}
+        if(name==="wardName"){biwaran.ward.name=value;}
+        if(name==="wardNumber"){biwaran.ward.number=value;}
+        if(name==="totalWardProjectTotal"){biwaran.totalWardProject.total=value;}
+        if(name==="totalWardProjectWardId"){biwaran.totalWardProject.wardId=value;}
+        this.setState({biwaran:biwaran});
     }
     handleSubmit(){
-        this.setState({status:'adding ... '});
+        this.setState({errors:[],message:'Wait a moment !'});
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/put_option',
-            data: this.state.data,
+            data:this.state.biwaran,
         }).then((response)=> {
-            console.log(response.data);
-            this.setState({errors:[]});
-            this.setState({status:''});
-            this.setState({isRecordUpdated:false},()=>{
-                this.setState({isRecordUpdated:true});
-            });
+            this.setState({isDetailUpdated:false},()=>{this.setState({isDetailUpdated:true});});
+            this.setState({message:''});
             if(response.data[0]===0){
-                let errors = this.state.errors;
-                response.data.forEach(obj => {
-                    Object.entries(obj).forEach(([key, value]) => {
-                        for(let i=0;i<=value.length;i++){
-                            errors.push(value[i]);
-                        }
-                    });
-                });
-                this.setState({errors:errors});
-            }else if (response.data[0]===1){this.setState({status:response.data[1]});
-            }else{this.setState({status:'Something went wrong.'});}
-        }).catch((res) => {this.setState({status:'Something went wrong.'});});
+                this.setState({errors:handleError(response.data[1])})
+            }else if (response.data[0]===1) {
+                this.setState({message:'Completed !'});
+            }else {
+                this.setState({message:'Something went wrong !'});
+            }
+        }).catch((res) => {this.setState({message:'Something went wrong !'});});
+
     }
     render() {
         return (
@@ -138,170 +122,170 @@ export class OptionEntry extends React.Component{
                     </div>
                     <div id="entry">
                         <div id="select_item">
-                            <select name="select" onChange={this.updateText}>
-                                <option value="1">बैङ्क सम्बन्धि विवरण</option>
-                                <option value="2">प्रमुख प्रशासकीय अधिकृत सम्बन्धि विवरण</option>
-                                <option value="3">लागत व्यहोर्ने स्रोतहरु</option>
-                                <option value="4">पदाधिकारी पद</option>
-                                <option value="5">वडा विवरण</option>
-                                <option value="6">योजना विवरण</option>
+                            <select name="selectedBiwaran" onChange={this.handleValueChange}>
+                                <option selected={true} disabled={true}>--विवरणहरु--</option>
+                                <option value="bank">बैङ्क सम्बन्धि विवरण</option>
+                                <option value="ppa">प्रमुख प्रशासकीय अधिकृत सम्बन्धि विवरण</option>
+                                <option value="lagatBehorneSrot">लागत व्यहोर्ने स्रोतहरु</option>
+                                <option value="padadhikariPada">पदाधिकारी पद</option>
+                                <option value="ward">वडा विवरण</option>
+                                <option value="totalWardProject">योजना विवरण</option>
                             </select>
                         </div>
-                        {this.state.data.selected_option===1 ?
+                        {this.state.biwaran.selectedBiwaran==="bank" ?
                         <Fragment>
                             <div className="item">
                                 <div id="input">
                                     <span>बैङ्कको नाम</span>
-                                    <input name="bank_name" value={this.state.data.bank_name} onChange={this.updateText} type="text" placeholder="बैङ्क नाम"/>
+                                    <input name="bankName" value={this.state.biwaran.bank.name} onChange={this.handleValueChange} type="text" placeholder="नाम"/>
                                 </div>
                             </div>
                             <div className='item'>
                                 <div id="input">
                                     <span>शाखा कार्यालय</span>
-                                    <input name="bank_sakha" value={this.state.data.bank_sakha} onChange={this.updateText} type="text" placeholder="बैङ्कको ठेगाना"/>
+                                    <input name="bankBranch" value={this.state.biwaran.bank.branch} onChange={this.handleValueChange} type="text" placeholder="शाखा"/>
                                 </div>
                             </div>
                             <div className='item'>
                                 <div id="input">
                                     <span>बैङ्कको ठेगाना</span>
-                                    <input name="bank_thegana" value={this.state.data.bank_thegana} onChange={this.updateText} type="text" placeholder="बैङ्कको ठेगाना"/>
+                                    <input name="bankAddr" value={this.state.biwaran.bank.addr} onChange={this.handleValueChange} type="text" placeholder="ठेगाना"/>
                                 </div>
                             </div>
                         </Fragment> : null }
-                        {this.state.data.selected_option===2 ?
+                        {this.state.biwaran.selectedBiwaran==="ppa" ?
                         <Fragment>
                             <div className="item">
                                 <div id="input">
                                     <span>प्रमुख प्रशासकीय अधिकृतको नाम, थर</span>
-                                    <input name="ppa_name" value={this.state.data.ppa_name} onChange={this.updateText} type="text" placeholder="प्रमुख प्रशासकीय अधिकृतको नाम, थर"/>
+                                    <input name="ppaName" value={this.state.biwaran.ppa.ppaName} onChange={this.handleValueChange} type="text" placeholder="प्रमुख प्रशासकीय अधिकृतको नाम, थर"/>
                                 </div>
                             </div>
                             <div className='item'>
                                 <div id="input">
                                     <span>प्रमुख प्रशासकीय अधिकृतको सम्पर्क नं.</span>
-                                    <input name="ppa_number" value={this.state.data.ppa_number} onChange={this.updateText} type="text" placeholder="प्रमुख प्रशासकीय अधिकृतको सम्पर्क नं."/>
+                                    <input name="ppaPhone" value={this.state.biwaran.ppa.ppaPhone} onChange={this.handleValueChange} type="text" placeholder="प्रमुख प्रशासकीय अधिकृतको सम्पर्क नं."/>
                                 </div>
                             </div>
                         </Fragment> : null }
-                        {this.state.data.selected_option===3 ?
+                        {this.state.biwaran.selectedBiwaran==="lagatBehorneSrot" ?
                         <Fragment>
                             <div className="item">
                                 <div id="input">
                                     <span>लागत व्यहोर्ने स्रोत</span>
-                                    <input name="lagat_behorne_srot" value={this.state.data.lagat_behorne_srot} onChange={this.updateText} type="text" placeholder="लागत व्यहोर्ने स्रोत"/>
+                                    <input name="lagatBehorneSrotName" value={this.state.biwaran.lagatBehorneSrotName} onChange={this.handleValueChange} type="text" placeholder="लागत व्यहोर्ने स्रोत"/>
                                 </div>
                             </div>
                         </Fragment> : null }
-                        {this.state.data.selected_option===4 ?
+                        {this.state.biwaran.selectedBiwaran==="padadhikariPada" ?
                             <Fragment>
                                 <div className="item">
                                     <div id="input">
-                                        <span>पदाधिकारी पद</span>
-                                        <input name="padadhikari_pada" value={this.state.data.padadhikari_pada} onChange={this.updateText} type="text" placeholder="पदाधिकारी पद"/>
+                                        <span>पद</span>
+                                        <input name="padadhikariPadaName" value={this.state.biwaran.padadhikariPada.pada} onChange={this.handleValueChange} type="text" placeholder="पदाधिकारी पद"/>
                                     </div>
                                 </div>
                                 <div className="item">
                                     <div id="input">
                                         <span>पदाधिकारी स्तर</span>
-                                        <input name="padadhikari_level" value={this.state.data.padadhikari_level} onChange={this.updateText} type="text" placeholder="पदाधिकारी स्तर"/>
+                                        <input name="padadhikariPadaLevel" value={this.state.biwaran.padadhikariPada.level} onChange={this.handleValueChange} type="text" placeholder="पदाधिकारी स्तर"/>
                                     </div>
                                 </div>
                             </Fragment> : null }
-                        {this.state.data.selected_option===5 ?
+                        {this.state.biwaran.selectedBiwaran==="ward" ?
                             <Fragment>
                                 <div className="item">
                                     <div id="input">
                                         <span>वडा नम्बर</span>
-                                        <input name="ward_number" value={this.state.data.ward_number} onChange={this.updateText} type="text" placeholder="वडा नं."/>
+                                        <input name="wardNumber" value={this.state.biwaran.ward.number} onChange={this.handleValueChange} type="text" placeholder="वडा नं."/>
                                     </div>
                                 </div>
                                 <div className='item'>
                                     <div id="input">
-                                        <span>वडाको नाम</span>
-                                        <input name="ward_name" value={this.state.data.ward_name} onChange={this.updateText} type="text" placeholder="वडाको नाम"/>
+                                        <span>वडा नाम</span>
+                                        <input name="wardName" value={this.state.biwaran.ward.name} onChange={this.handleValueChange} type="text" placeholder="वडाको नाम"/>
                                     </div>
                                 </div>
                             </Fragment> : null }
-                        {this.state.data.selected_option===6 ?
+                        {this.state.biwaran.selectedBiwaran==="totalWardProject"?
                             <Fragment>
                                 <div className="item">
-                                    <span>आर्थिक बर्ष</span>
-                                    <select name="aarthik_barsa" onChange={this.updateText}>
-                                        {this.state.aa_ba_list.map((item,index)=>{
-                                            return <option key={index} value={item}>{item}</option>
-                                        })}
-                                    </select>
-                                </div>
-                                <div className="item">
                                     <span>वार्ड नं. </span>
-                                    <select name="yojana_sangkhya_ward_number" onChange={this.updateText}>
-                                        {this.state.ward_options.map((item,index)=>{
-                                            return <option key={index} value={item.ward_number}>वार्ड नं. {item.ward_number}, {item.ward_name}</option>
+                                    <select name="totalWardProjectWardId" onChange={this.handleValueChange}>
+                                        <option selected={true} disabled={true} >-- वडाहरु --</option>
+                                        {this.state.dataReceived.wards.map((ward,index)=>{
+                                            return <option key={index} value={ward.id}>वार्ड नं. {ward.number}, {ward.name}</option>
                                         })}
                                     </select>
                                 </div>
                                 <div className='item'>
                                     <div id="input">
                                         <span>योजना संख्या</span>
-                                        <input name="yojana_sangkhya" value={this.state.data.yojana_sankhya} onChange={this.updateText} type="text" placeholder="संख्या"/>
+                                        <input name="totalWardProjectTotal" value={this.state.biwaran.totalWardProject.total} onChange={this.handleValueChange} type="text" placeholder="संख्या"/>
                                     </div>
                                 </div>
                             </Fragment> : null }
                         <div id="control">
-                            <div id="error">
+                            <div id="errors">
                                 {this.state.errors.map((error,index)=>{
-                                    return <span key={index}>{error}</span>
+                                    return <span id="error" key={index}>{error}</span>
                                 })}
                             </div>
-                            <div id="status">
-                                <span>{this.state.status}</span>
+                            <div id="messages">
+                                <span id='message'>{this.state.message}</span>
                             </div>
-                            <button onClick={this.handleSubmit}>थप्नुहोस</button>
+                            <button onClick={this.handleSubmit}>अपडेट</button>
                         </div>
                     </div>
-                    {this.state.isRecordUpdated ? <Record  data={this.state.data}/> : null }
+                    {this.state.isDetailUpdated ? <Detail  biwaran={this.state.biwaran}/> : null }
                 </div>
             </div>
         );
     }
 }
-class Record extends React.Component{
+class Detail extends React.Component{
     constructor() {
         super();
         this.state={
-            padadhikari_pada_options:[],
-            lagat_behorne_srot_options:[],
-            ppa_options:[],
-            bank_options:[],
-            ward_options:[],
-            yojana_sangkhya:[],
+            receivedDetail:{
+                banks:[],
+                ppas:[],
+                lagatBehorneSrots:[],
+                wards:[],
+                totalWardProjects:[],
+                padadhikariPadas:[]
+            },
+            sendingData:{
+                id:null,
+                detail:'',
+            }
         }
+        this.handleDataDelete = this.handleDataDelete.bind(this);
+    }
+    handleDataDelete(detail,id,index){
+        axios({
+            method: 'post',
+            url: localStorage.getItem('server')+'api/deleteDetail',
+            data: {detail:detail,id:id},
+        }).then((response)=> {
+            console.log(response.data);
+            let receivedDetail = this.state.receivedDetail;
+            receivedDetail[detail+'s'].splice(index, 1);
+            this.setState({receivedDetail:receivedDetail});
+        }).catch((res)=>{
+
+        })
     }
     componentWillMount() {
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getOptions',
-            data: {options:'all',fy:localStorage.getItem('aa_ba')},
+            data: {detail:'all'},
         }).then((response)=> {
             console.log(response.data);
-            if (response.data.lagat_behorne_srot_options) {
-                this.setState({lagat_behorne_srot_options: response.data.lagat_behorne_srot_options})
-            }
-            if (response.data.padadhikari_pada_options) {
-                this.setState({padadhikari_pada_options: response.data.padadhikari_pada_options})
-            }
-            if (response.data.ppa_options) {
-                this.setState({ppa_options: response.data.ppa_options});
-            }
-            if (response.data.bank_options) {
-                this.setState({bank_options: response.data.bank_options});
-            }
-            if (response.data.ward_options) {
-                this.setState({ward_options: response.data.ward_options});
-            }
-            if (response.data.yojana_sangkhya) {
-                this.setState({yojana_sangkhya: response.data.yojana_sangkhya});
-            }
+            let receivedDetail=this.state.receivedDetail;
+            receivedDetail = response.data;
+            this.setState({receivedDetail: receivedDetail});
         }).catch((res)=>{
 
         })
@@ -309,136 +293,99 @@ class Record extends React.Component{
     render(){
         return(
             <div id="record">
-                {this.props.data.selected_option===1 ?
+                {this.props.biwaran.selectedBiwaran==="bank" ?
                     <Fragment>
-                        <div id="title">
-
-                        </div>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td>
-                                <td>बैङ्क नाम</td>
-                                <td>बैङ्क शाखा</td>
-                                <td>बैङ्क ठेगाना</td>
-                                <td>डिलेट गर्नहोस</td>
+                                <td>क्र.सं.</td><td>नाम</td><td>शाखा</td><td>ठेगाना</td><td>हजाउनुहोस</td>
                             </tr>
-                            {this.state.bank_options.map((item, index)=>{
+                            {this.state.receivedDetail.banks.map((bank, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.bank_name}</td>
-                                    <td>{item.bank_sakha}</td>
-                                    <td>{item.bank_thegana}</td>
-                                    <td><span>सम्पादन</span></td>
+                                    <td>{bank.name}</td>
+                                    <td>{bank.branch}</td>
+                                    <td>{bank.addr}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,bank.id,index)} src={require('./../../icons/delete.svg').default}/></td>
+                                </tr>
+                            })}
+                        </table>
+                    </Fragment> : null}
+                {this.props.biwaran.selectedBiwaran==="ppa" ?
+                    <Fragment>
+                        <table>
+                            <tr>
+                                <td>क्र.सं.</td><td>प्रमुख प्रशासकीय अधिकृतको नाम, थर</td><td>प्रमुख प्रशासकीय अधिकृतको फोन</td><td>हजाउनुहोस</td>
+                            </tr>
+                            {this.state.receivedDetail.ppas.map((ppa, index)=>{
+                                return  <tr key={index}>
+                                    <td>{index+1}</td>
+                                    <td>{ppa.name}</td>
+                                    <td>{ppa.phone}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,ppa.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}
                         </table>
                     </Fragment> : null }
-                {this.props.data.selected_option===2 ?
+                {this.props.biwaran.selectedBiwaran==="lagatBehorneSrot" ?
                     <Fragment>
-                        <div id="title">
-
-                        </div>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td>
-                                <td>प्रमुख प्रशासकीय अधिकृतको नाम, थर</td>
-                                <td>प्रमुख प्रशासकीय अधिकृतको</td>
-                                <td>डिलेट गर्नहोस</td>
+                                <td>क्र.सं.</td><td>लागत व्यहोर्ने स्रोतको नाम</td><td>हजाउनुहोस</td>
                             </tr>
-                            {this.state.ppa_options.map((item, index)=>{
+                            {this.state.receivedDetail.lagatBehorneSrots.map((lagatBehorneSrot, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.ppa_name}</td>
-                                    <td>{item.ppa_number}</td>
-                                    <td>डिलेट गर्नहोस</td>
+                                    <td>{lagatBehorneSrot.name}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,lagatBehorneSrot.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}
                         </table>
                     </Fragment> : null }
-                {this.props.data.selected_option===3 ?
+                {this.props.biwaran.selectedBiwaran==="padadhikariPada" ?
                     <Fragment>
-                        <div id="title">
-
-                        </div>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td>
-                                <td>लागत व्यहोर्ने स्रोत (अन्य)</td>
-                                <td>डिलेट गर्नहोस</td>
+                                <td>क्र.सं.</td><td>पदाधिकारी पदको नाम</td><td>पदाधिकारी पदको स्तर</td><td>हजाउनुहोस</td>
                             </tr>
-                            {this.state.lagat_behorne_srot_options.map((item, index)=>{
+                            {this.state.receivedDetail.padadhikariPadas.map((padadhikariPada, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.lagat_behorne_srot}</td>
-                                    <td>डिलेट गर्नहोस</td>
+                                    <td>{padadhikariPada.pada}</td>
+                                    <td>{padadhikariPada.level}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,padadhikariPada.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}
                         </table>
                     </Fragment> : null }
-                {this.props.data.selected_option===4 ?
+                {this.props.biwaran.selectedBiwaran==="ward" ?
                     <Fragment>
-                        <div id="title">
-
-                        </div>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td>
-                                <td>पदाधिकारीको पद</td>
-                                <td>पदाधिकारीको स्तर</td>
-                                <td>डिलेट गर्नहोस</td>
+                                <td>क्र.सं.</td><td>वडा नाम</td><td>वडा नम्बर</td><td>हजाउनुहोस</td>
                             </tr>
-                            {this.state.padadhikari_pada_options.map((item, index)=>{
+                            {this.state.receivedDetail.wards.map((ward, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.pada}</td>
-                                    <td>{item.level}</td>
-                                    <td>डिलेट गर्नहोस</td>
+                                    <td>{ward.name}</td>
+                                    <td>{ward.number}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,ward.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}
                         </table>
                     </Fragment> : null }
-                {this.props.data.selected_option===5 ?
+                {this.props.biwaran.selectedBiwaran==="totalWardProject" ?
                     <Fragment>
-                        <div id="title">
-
-                        </div>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td>
-                                <td>वडा नम्बर</td>
-                                <td>वडाको नाम</td>
-                                <td>डिलेट गर्नहोस</td>
+                                <td>क्र.सं.</td><td>वडा नाम</td><td>वडा नम्बर</td><td>जम्मा योजनाहरु</td><td>हजाउनुहोस</td>
                             </tr>
-                            {this.state.ward_options.map((item, index)=>{
+                            {this.state.receivedDetail.totalWardProjects.map((totalWardProject, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.ward_number}</td>
-                                    <td>{item.ward_name}</td>
-                                    <td>डिलेट गर्नहोस</td>
-                                </tr>
-                            })}
-                        </table>
-                    </Fragment> : null }
-                {this.props.data.selected_option===6 ?
-                    <Fragment>
-                        <div id="title">
-
-                        </div>
-                        <table>
-                            <tr>
-                                <td>क्र.सं.</td>
-                                <td>वडा नम्बर</td>
-                                <td>योजना संख्या</td>
-                                <td>आर्थिक बर्ष</td>
-                                <td>डिलेट गर्नहोस</td>
-                            </tr>
-                            {this.state.yojana_sangkhya.map((item, index)=>{
-                                return  <tr key={index}>
-                                    <td>{index+1}</td>
-                                    <td>{item.ward_number}</td>
-                                    <td>{item.yojana_sangkhya}</td>
-                                    <td>{item.fy}</td>
-                                    <td>डिलेट गर्नहोस</td>
+                                    <td>{totalWardProject.name}</td>
+                                    <td>{totalWardProject.number}</td>
+                                    <td>{totalWardProject.total}</td>
+                                    <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,totalWardProject.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}
                         </table>

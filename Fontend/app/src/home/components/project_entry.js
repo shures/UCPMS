@@ -1,3 +1,4 @@
+import {handleError} from "./helperFuntion";
 import React from "react";
 import './../css/project_entry.css';
 import './../css/agreement_print_preview.css';
@@ -6,11 +7,12 @@ import {Link} from "react-router-dom";
 
 import {Header} from "./header";
 import {NepaliDatePicker} from "datepicker-nepali-reactjs";
+
 export class Project_entry extends React.Component{
     constructor() {
         super();
         this.state = {
-            projectData:{
+            sendingData:{
                 upabhokta_samitiko_naam : 'उपभोक्ता समितिको नाम',
                 upabokta_samitiko_thegana : 'उपभोक्ता समितिको ठेगाना',
                 aayojanako_naam : 'योजनाको नाम',
@@ -20,7 +22,7 @@ export class Project_entry extends React.Component{
                 lagat_anuman : 80000,
                 lagat_behorne_karyalay :150000,
                 lagat_behorne_upobhokta_samiti :320000,
-                lagat_behorne_anne_option:1,
+                lagatBehorneSrotId:0,
                 lagat_behorne_anne : 258555,
                 bastugat_anudan_sangbata_samagriko_naam :'बस्तुगत संघबाट सामाग्री',
                 bastugat_anudan_sangbata_ekai :'बस्तुगत संघबाट इकाइ',
@@ -68,15 +70,26 @@ export class Project_entry extends React.Component{
                 anne_kehi_vaye : 'अन्य केही भए',
 
                 aayojana_ante_miti :'',
-                aayojana_hune_woda:1,
-                pramukha_prashasakiyeko_name:1,
+                wardId:0,
+                ppaId:0,
                 adaxyako_number:'9847742665',
                 kaifiyet:'कैफियत',
                 padadhikariharu:[],
-                isEdit:true,
+
+                update:false,
+                projectId:null,
+
+            },
+            receivedDetail:{
+                banks:[],
+                ppas:[],
+                lagatBehorneSrots:[],
+                wards:[],
+                totalWardProjects:[],
+                padadhikariPadas:[],
             },
             padadhikariharu_name:'',
-            padadhikariharu_pada_id:1,
+            padadhikariPadaId:0,
             padadhikariharu_thegana:'',
             padadhikariharu_na_na:'',
             padadhikariharu_jilla:'मु्स्ताङ',
@@ -84,41 +97,29 @@ export class Project_entry extends React.Component{
             show_bastugat_anudan:false,
             show_kistako_biwaran:false,
             show_aayojana_marmat_sambhar:false,
-            submitSuccess : false,
-            submitSuccessId:null,
-            submitStatus:'',
-            errors:[],
 
-            padadhikari_pada_options:[],
-            lagat_behorne_srot_options:[],
-            ppa_options:[],
-            ward_options:[],
+            message:'',
+            submitId:null,
+            errors:[],
         }
-        this.updateText = this.updateText.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAddTableRow = this.handleAddTableRow.bind(this);
         this.handleRemoveTableRow = this.handleRemoveTableRow.bind(this);
     }
     handleSubmit(){
-        console.log(this.state.projectData.padadhikariharu);
-        this.setState({submitStatus:'Submitting ...'});
+        this.setState({message:'Submitting ...'});
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/putData',
-            data: this.state.projectData,
+            data: this.state.sendingData,
         }).then((response)=> {
-            this.setState({submitStatus:'',errors:[]});
+            this.setState({message:'',errors:[]});
             if(response.data[0]===1){
-                this.setState({submitSuccess:true});
-                this.setState({submitSuccessId:response.data[1]});
+                this.setState({message:true});
+                this.setState({submitId:response.data[1]});
             }else if(response.data[0]===0){
-                let errors = this.state.errors;
-                for (let key in response.data[1]){
-                    response.data[1][key].forEach((item,index,arr)=>{
-                        errors.push(item);
-                    });
-                    this.setState({errors:errors});
-                }
+                this.setState({errors:handleError(response.data[1])});
             }
         });
     }
@@ -126,130 +127,122 @@ export class Project_entry extends React.Component{
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getOptions',
-            data: {options:'all'},
+            data: {detail:'all'},
         }).then((response)=> {
-            if (response.data.lagat_behorne_srot_options) {
-                this.setState({lagat_behorne_srot_options: response.data.lagat_behorne_srot_options})
-            }
-            if (response.data.padadhikari_pada_options) {
-                this.setState({padadhikari_pada_options: response.data.padadhikari_pada_options, padadhikari_pada_id: response.data.padadhikari_pada_options[0].id})
-            }
-            if (response.data.ppa_options) {
-                this.setState({ppa_options: response.data.ppa_options});
-            }
-            if (response.data.ward_options) {
-                this.setState({ward_options: response.data.ward_options});
-            }
+            console.log(response.data);
+            let receivedDetail=this.state.receivedDetail;
+            receivedDetail = response.data;
+            this.setState({receivedDetail: receivedDetail});
         }).catch((res)=>{
 
         })
-        if(this.state.projectData.isEdit){
+        if(this.state.sendingData.update){
             axios({
                 method: 'post',
                 url: localStorage.getItem('server')+'api/getProject',
-                data:{'id': 10},
+                data:{'projectId': 2},
             }).then((response)=> {
                 console.log(response.data);
-                let projectData = this.state.projectData;
-                projectData = response.data[1];
-                projectData.isEdit = true;
-                projectData.padadhikariharu = response.data[2];
-                this.setState({projectData:projectData});
+                let sendingData = this.state.sendingData;
+                sendingData = response.data[1];
+                sendingData.update = true;
+                sendingData.padadhikariharu = response.data[2];
+                this.setState({sendingData:sendingData});
             }).catch((res) => {
 
             });
         }
         // if(Number.isInteger(this.props.location.id) && this.props.location.id!==''){
-        //     let projectData=this.state.projectData;
-        //     projectData.edit = true;
-        //     this.setState({projectData:projectData});
+        //     let sendingData=this.state.sendingData;
+        //     sendingData.edit = true;
+        //     this.setState({sendingData:sendingData});
         // }
     }
     handleRemoveTableRow(row_number){
-        let padadhikariharu = this.state.projectData.padadhikariharu;
+        let padadhikariharu = this.state.sendingData.padadhikariharu;
         padadhikariharu.splice(row_number, 1);
         this.setState({padadhikariharu:padadhikariharu});
     }
     handleAddTableRow(){
-        let padadhikariharu = this.state.projectData.padadhikariharu;
-        padadhikariharu.push({pada_id:this.state.padadhikariharu_pada_id,name:this.state.padadhikariharu_name,thegana:this.state.padadhikariharu_thegana,na_na:this.state.padadhikariharu_na_na,jilla:this.state.padadhikariharu_jilla});
+        let padadhikariharu = this.state.sendingData.padadhikariharu;
+        padadhikariharu.push({padadhikariPadaId:this.state.padadhikariPadaId,name:this.state.padadhikariharu_name,thegana:this.state.padadhikariharu_thegana,na_na:this.state.padadhikariharu_na_na,jilla:this.state.padadhikariharu_jilla});
         this.setState({padadhikariharu:padadhikariharu},()=>{
-            this.setState({padadhikariharu_pada_id:1,padadhikariharu_name:'',padadhikariharu_na_na:''});
+            this.setState({padadhikariPadaId:0,padadhikariharu_name:'',padadhikariharu_na_na:''});
         });
     }
-    updateText(event){
+    handleValueChange(event){
         let name = event.target.name;
         let value = event.target.value;
-        let projectData = this.state.projectData;
-        if(name==="upabhokta_samitiko_naam"){projectData.upabhokta_samitiko_naam = value;}
-        if(name==="upabokta_samitiko_thegana"){projectData.upabokta_samitiko_thegana=value;}
-        if(name==="aayojanako_naam"){projectData.aayojanako_naam=value}
-        if(name==="aayojanako_sthal"){projectData.aayojanako_sthal=value}
-        if(name==="aayojanako_udeshya"){projectData.aayojanako_udeshya=value}
-        if(name==="aayojana_suru_miti"){projectData.aayojana_suru_miti=value}
-        if(name==="lagat_anuman"){projectData.lagat_anuman=value}
-        if(name==="lagat_behorne_karyalay"){projectData.lagat_behorne_karyalay=value}
-        if(name==="lagat_behorne_upobhokta_samiti"){projectData.lagat_behorne_upobhokta_samiti=value}
-        if(name==="lagat_behorne_anne_option"){projectData.lagat_behorne_anne_option=value}
-        if(name==="lagat_behorne_anne"){projectData.lagat_behorne_anne=value}
+        let sendingData = this.state.sendingData;
+        if(name==="upabhokta_samitiko_naam"){sendingData.upabhokta_samitiko_naam = value;}
+        if(name==="upabokta_samitiko_thegana"){sendingData.upabokta_samitiko_thegana=value;}
+        if(name==="aayojanako_naam"){sendingData.aayojanako_naam=value}
+        if(name==="aayojanako_sthal"){sendingData.aayojanako_sthal=value}
+        if(name==="aayojanako_udeshya"){sendingData.aayojanako_udeshya=value}
+        if(name==="aayojana_suru_miti"){sendingData.aayojana_suru_miti=value}
+        if(name==="lagat_anuman"){sendingData.lagat_anuman=value}
+        if(name==="lagat_behorne_karyalay"){sendingData.lagat_behorne_karyalay=value}
+        if(name==="lagat_behorne_upobhokta_samiti"){sendingData.lagat_behorne_upobhokta_samiti=value}
+        if(name==="lagatBehorneSrotId"){sendingData.lagatBehorneSrotId=value}
+        if(name==="lagat_behorne_anne"){sendingData.lagat_behorne_anne=value}
 
-        if(name==="bastugat_anudan_sangbata_samagriko_naam"){projectData.bastugat_anudan_sangbata_samagriko_naam=value}
-        if(name==="bastugat_anudan_sangbata_ekai"){projectData.bastugat_anudan_sangbata_ekai=value}
-        if(name==="bastugat_anudan_pradeshbata_samagriko_naam"){projectData.bastugat_anudan_pradeshbata_samagriko_naam=value}
-        if(name==="bastugat_anudan_pradeshbata_ekai"){projectData.bastugat_anudan_pradeshbata_ekai=value}
-        if(name==="bastugat_anudan_sthaniyebata_samagriko_naam"){projectData.bastugat_anudan_sthaniyebata_samagriko_naam=value}
-        if(name==="bastugat_anudan_sthaniyebata_ekai"){projectData.bastugat_anudan_sthaniyebata_ekai=value}
-        if(name==="bastugat_anudan_gairasarakaribata_samagriko_naam"){projectData.bastugat_anudan_gairasarakaribata_samagriko_naam=value}
-        if(name==="bastugat_anudan_gairasarakaribata_ekai"){projectData.bastugat_anudan_gairasarakaribata_ekai=value}
-        if(name==="bastugat_anudan_bideshbata_samagriko_naam"){projectData.bastugat_anudan_bideshbata_samagriko_naam=value}
-        if(name==="bastugat_anudan_bideshbata_ekai"){projectData.bastugat_anudan_bideshbata_ekai=value}
-        if(name==="bastugat_anudan_upobhoktasamitibata_samagriko_naam"){projectData.bastugat_anudan_upobhoktasamitibata_samagriko_naam=value}
-        if(name==="bastugat_anudan_upokhoktasamitibata_ekai"){projectData.bastugat_anudan_upokhoktasamitibata_ekai=value}
-        if(name==="bastugat_anudan_anne_samagriko_naam"){projectData.bastugat_anudan_anne_samagriko_naam=value}
-        if(name==="bastugat_anudan_anne_ekai"){projectData.bastugat_anudan_anne_ekai=value}
+        if(name==="bastugat_anudan_sangbata_samagriko_naam"){sendingData.bastugat_anudan_sangbata_samagriko_naam=value}
+        if(name==="bastugat_anudan_sangbata_ekai"){sendingData.bastugat_anudan_sangbata_ekai=value}
+        if(name==="bastugat_anudan_pradeshbata_samagriko_naam"){sendingData.bastugat_anudan_pradeshbata_samagriko_naam=value}
+        if(name==="bastugat_anudan_pradeshbata_ekai"){sendingData.bastugat_anudan_pradeshbata_ekai=value}
+        if(name==="bastugat_anudan_sthaniyebata_samagriko_naam"){sendingData.bastugat_anudan_sthaniyebata_samagriko_naam=value}
+        if(name==="bastugat_anudan_sthaniyebata_ekai"){sendingData.bastugat_anudan_sthaniyebata_ekai=value}
+        if(name==="bastugat_anudan_gairasarakaribata_samagriko_naam"){sendingData.bastugat_anudan_gairasarakaribata_samagriko_naam=value}
+        if(name==="bastugat_anudan_gairasarakaribata_ekai"){sendingData.bastugat_anudan_gairasarakaribata_ekai=value}
+        if(name==="bastugat_anudan_bideshbata_samagriko_naam"){sendingData.bastugat_anudan_bideshbata_samagriko_naam=value}
+        if(name==="bastugat_anudan_bideshbata_ekai"){sendingData.bastugat_anudan_bideshbata_ekai=value}
+        if(name==="bastugat_anudan_upobhoktasamitibata_samagriko_naam"){sendingData.bastugat_anudan_upobhoktasamitibata_samagriko_naam=value}
+        if(name==="bastugat_anudan_upokhoktasamitibata_ekai"){sendingData.bastugat_anudan_upokhoktasamitibata_ekai=value}
+        if(name==="bastugat_anudan_anne_samagriko_naam"){sendingData.bastugat_anudan_anne_samagriko_naam=value}
+        if(name==="bastugat_anudan_anne_ekai"){sendingData.bastugat_anudan_anne_ekai=value}
 
-        if(name==="aayojana_labhanbit_gharpariwar_sangkhya"){projectData.aayojana_labhanbit_gharpariwar_sangkhya=value}
-        if(name==="aayojana_labhanbit_janasankhya"){projectData.aayojana_labhanbit_janasankhya=value}
-        if(name==="aayojana_labhanbit_sangathit_sangkhya"){projectData.aayojana_labhanbit_sangathit_sangkhya=value}
-        if(name==="aayojana_labhanbit_anne"){projectData.aayojana_labhanbit_anne=value}
-        if(name==="gathan_vayeko_miti"){projectData.gathan_vayeko_miti=value}
+        if(name==="aayojana_labhanbit_gharpariwar_sangkhya"){sendingData.aayojana_labhanbit_gharpariwar_sangkhya=value}
+        if(name==="aayojana_labhanbit_janasankhya"){sendingData.aayojana_labhanbit_janasankhya=value}
+        if(name==="aayojana_labhanbit_sangathit_sangkhya"){sendingData.aayojana_labhanbit_sangathit_sangkhya=value}
+        if(name==="aayojana_labhanbit_anne"){sendingData.aayojana_labhanbit_anne=value}
+        if(name==="gathan_vayeko_miti"){sendingData.gathan_vayeko_miti=value}
 
-        if(name==="upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya"){projectData.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya=value}
-        if(name==="anubhav_barsa"){projectData.anubhav_barsa=value}
+        if(name==="upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya"){sendingData.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya=value}
+        if(name==="anubhav_barsa"){sendingData.anubhav_barsa=value}
 
-        if(name==="pratham_miti"){projectData.pratham_miti=value}
-        if(name==="pratham_rakam"){projectData.pratham_rakam=value}
-        if(name==="pratham_samagriko_pariman") {projectData.pratham_samagriko_pariman=value}
-        if(name==="pratham_kaifiyet"){projectData.pratham_kaifiyet=value}
-        if(name==="dorshro_miti"){projectData.dorshro_miti=value}
-        if(name==="dorshro_rakam"){projectData.dorshro_rakam=value}
-        if(name==="dorshro_samagriko_pariman"){projectData.dorshro_samagriko_pariman=value}
-        if(name==="dorshro_kaifiyet"){projectData.dorshro_kaifiyet=value}
-        if(name==="teshro_miti"){projectData.teshro_miti=value}
-        if(name==="teshro_rakam"){projectData.teshro_rakam=value}
-        if(name==="teshro_samagriko_pariman"){projectData.teshro_samagriko_pariman=value}
-        if(name==="teshro_kaifiyet"){projectData.teshro_kaifiyet=value}
-        if(name==="jamma_miti"){projectData.jamma_miti=value}
-        if(name==="jamma_rakam"){projectData.jamma_rakam=value}
-        if(name==="jamma_samagriko_pariman"){projectData.jamma_samagriko_pariman=value}
-        if(name==="jamma_kaifiyet"){projectData.jamma_kaifiyet=value}
+        if(name==="pratham_miti"){sendingData.pratham_miti=value}
+        if(name==="pratham_rakam"){sendingData.pratham_rakam=value}
+        if(name==="pratham_samagriko_pariman") {sendingData.pratham_samagriko_pariman=value}
+        if(name==="pratham_kaifiyet"){sendingData.pratham_kaifiyet=value}
+        if(name==="dorshro_miti"){sendingData.dorshro_miti=value}
+        if(name==="dorshro_rakam"){sendingData.dorshro_rakam=value}
+        if(name==="dorshro_samagriko_pariman"){sendingData.dorshro_samagriko_pariman=value}
+        if(name==="dorshro_kaifiyet"){sendingData.dorshro_kaifiyet=value}
+        if(name==="teshro_miti"){sendingData.teshro_miti=value}
+        if(name==="teshro_rakam"){sendingData.teshro_rakam=value}
+        if(name==="teshro_samagriko_pariman"){sendingData.teshro_samagriko_pariman=value}
+        if(name==="teshro_kaifiyet"){sendingData.teshro_kaifiyet=value}
+        if(name==="jamma_miti"){sendingData.jamma_miti=value}
+        if(name==="jamma_rakam"){sendingData.jamma_rakam=value}
+        if(name==="jamma_samagriko_pariman"){sendingData.jamma_samagriko_pariman=value}
+        if(name==="jamma_kaifiyet"){sendingData.jamma_kaifiyet=value}
 
-        if(name==="yojana_marmat_jimma_line_samiti"){projectData.yojana_marmat_jimma_line_samiti=value}
-        if(name==="marmat_sambhabit_srot"){projectData.marmat_sambhabit_srot=value}
-        if(name==="janasramdan"){projectData.janasramdan=value}
-        if(name==="sewa_sulka"){projectData.sewa_sulka=value}
-        if(name==="dastur_chandabata"){projectData.dastur_chandabata=value}
-        if(name==="anne_kehi_vaye"){projectData.anne_kehi_vaye=value}
+        if(name==="yojana_marmat_jimma_line_samiti"){sendingData.yojana_marmat_jimma_line_samiti=value}
+        if(name==="marmat_sambhabit_srot"){sendingData.marmat_sambhabit_srot=value}
+        if(name==="janasramdan"){sendingData.janasramdan=value}
+        if(name==="sewa_sulka"){sendingData.sewa_sulka=value}
+        if(name==="dastur_chandabata"){sendingData.dastur_chandabata=value}
+        if(name==="anne_kehi_vaye"){sendingData.anne_kehi_vaye=value}
 
-        if(name==="aayojana_ante_miti"){projectData.aayojana_ante_miti=value}
-        if(name==="aayojana_hune_woda"){projectData.aayojana_hune_woda=value}
-        if(name==="pramukha_prashasakiyeko_name"){projectData.pramukha_prashasakiyeko_name=value}
-        if(name==="pramukha_prashasakiyeko_number"){projectData.pramukha_prashasakiyeko_number=value}
-        if(name==="adaxyako_number"){projectData.adaxyako_number=value}
-        if(name==="kaifiyet"){projectData.kaifiyet=value}
-        this.setState({projectData:projectData});
+        if(name==="aayojana_ante_miti"){sendingData.aayojana_ante_miti=value}
+        if(name==="wardId"){sendingData.wardId=value}
+        if(name==="pramukha_prashasakiyeko_name"){sendingData.pramukha_prashasakiyeko_name=value}
+        if(name==="ppaId"){sendingData.ppaId=value}
+        if(name==="adaxyako_number"){sendingData.adaxyako_number=value}
+        if(name==="kaifiyet"){sendingData.kaifiyet=value}
+        this.setState({sendingData:sendingData});
 
-        if(name==="padadhikariharu_pada_id"){;this.setState({padadhikariharu_pada_id:value});}
+        if(name==="padadhikariPadaId"){ this.setState({padadhikariPadaId:value});}
         if(name==="padadhikariharu_name"){this.setState({padadhikariharu_name:value})}
         if(name==="padadhikariharu_thegana"){this.setState({padadhikariharu_thegana:value})}
         if(name==="padadhikariharu_na_na"){this.setState({padadhikariharu_na_na:value})}
@@ -271,11 +264,11 @@ export class Project_entry extends React.Component{
                                 <table id="simple">
                                     <tr>
                                         <td><span>नाम : <b id="required">*</b></span></td>
-                                        <td><input name="upabhokta_samitiko_naam" value={this.state.projectData.upabhokta_samitiko_naam} onChange={this.updateText} id="long_width" type="text" placeholder="उपभोक्ता समितिको नाम"/></td>
+                                        <td><input name="upabhokta_samitiko_naam" value={this.state.sendingData.upabhokta_samitiko_naam} onChange={this.handleValueChange} id="long_width" type="text" placeholder="उपभोक्ता समितिको नाम"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>ठेगाना : <b id="required">*</b></span></td>
-                                        <td><input name="upabokta_samitiko_thegana" type="text" value={this.state.projectData.upabokta_samitiko_thegana} onChange={this.updateText} placeholder=" उपभोक्ता समितिको ठेगाना"/></td>
+                                        <td><input name="upabokta_samitiko_thegana" type="text" value={this.state.sendingData.upabokta_samitiko_thegana} onChange={this.handleValueChange} placeholder=" उपभोक्ता समितिको ठेगाना"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -284,19 +277,19 @@ export class Project_entry extends React.Component{
                                 <table id="simple">
                                     <tr>
                                         <td><span>नाम : <b id="required">*</b></span></td>
-                                        <td><input name="aayojanako_naam" id="long_width" value={this.state.projectData.aayojanako_naam} onChange={this.updateText} type="text" placeholder="आयोजनाको नाम"/></td>
+                                        <td><input name="aayojanako_naam" id="long_width" value={this.state.sendingData.aayojanako_naam} onChange={this.handleValueChange} type="text" placeholder="आयोजनाको नाम"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>आयोजना स्थल : <b id="required">*</b></span></td>
-                                        <td><input name="aayojanako_sthal" type="text" value={this.state.projectData.aayojanako_sthal} onChange={this.updateText} placeholder="आयोजना स्थल"/></td>
+                                        <td><input name="aayojanako_sthal" type="text" value={this.state.sendingData.aayojanako_sthal} onChange={this.handleValueChange} placeholder="आयोजना स्थल"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>उदेश्य : <b id="required">*</b></span></td>
-                                        <td><input name="aayojanako_udeshya" type="text" value={this.state.projectData.aayojanako_udeshya} onChange={this.updateText} placeholder="आयोजना उदेश्य"/></td>
+                                        <td><input name="aayojanako_udeshya" type="text" value={this.state.sendingData.aayojanako_udeshya} onChange={this.handleValueChange} placeholder="आयोजना उदेश्य"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>आयोजना शुरु हुने मिति : <b id="required">*</b></span></td>
-                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.aayojana_suru_miti = date; this.setState({projectData:projectData})}} placeholder="आयोजना शुरु हुने मिति" /></td>
+                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.aayojana_suru_miti = date; this.setState({sendingData:sendingData})}} placeholder="आयोजना शुरु हुने मिति" /></td>
                                     </tr>
                                 </table>
                             </div>
@@ -305,19 +298,19 @@ export class Project_entry extends React.Component{
                                 <table id="simple">
                                     <tr>
                                         <td><span>घरपरियार संख्या : <b id="required">*</b></span></td>
-                                        <td><input name="aayojana_labhanbit_gharpariwar_sangkhya" value={this.state.projectData.aayojana_labhanbit_gharpariwar_sangkhya} onChange={this.updateText} type="text" placeholder="घरपरियार संख्या"/></td>
+                                        <td><input name="aayojana_labhanbit_gharpariwar_sangkhya" value={this.state.sendingData.aayojana_labhanbit_gharpariwar_sangkhya} onChange={this.handleValueChange} type="text" placeholder="घरपरियार संख्या"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>जनसंख्या : <b id="required">*</b></span></td>
-                                        <td><input name="aayojana_labhanbit_janasankhya" value={this.state.projectData.aayojana_labhanbit_janasankhya} onChange={this.updateText} type="text" placeholder="उपभोक्ता समिति"/></td>
+                                        <td><input name="aayojana_labhanbit_janasankhya" value={this.state.sendingData.aayojana_labhanbit_janasankhya} onChange={this.handleValueChange} type="text" placeholder="उपभोक्ता समिति"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>संगठित संख्या :</span></td>
-                                        <td><input name="aayojana_labhanbit_sangathit_sangkhya" value={this.state.projectData.aayojana_labhanbit_sangathit_sangkhya} onChange={this.updateText} type="text" placeholder="संगठित संख्या"/></td>
+                                        <td><input name="aayojana_labhanbit_sangathit_sangkhya" value={this.state.sendingData.aayojana_labhanbit_sangathit_sangkhya} onChange={this.handleValueChange} type="text" placeholder="संगठित संख्या"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>अन्य :</span></td>
-                                        <td><input name='aayojana_labhanbit_anne' value={this.state.projectData.aayojana_labhanbit_anne} onChange={this.updateText} type="text" placeholder="अन्य"/></td>
+                                        <td><input name='aayojana_labhanbit_anne' value={this.state.sendingData.aayojana_labhanbit_anne} onChange={this.handleValueChange} type="text" placeholder="अन्य"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -326,30 +319,31 @@ export class Project_entry extends React.Component{
                             <span>२) आयोजना लागत सम्बन्धि विवरण </span>
                             <div className="sub_title">
                                 <span>क) लागत अनुमान रु : <b id="required">*</b></span>
-                                <input name="lagat_anuman" value={this.state.projectData.lagat_anuman} onChange={this.updateText} type="text" placeholder="लागत अनुमान रु "/>
+                                <input name="lagat_anuman" value={this.state.sendingData.lagat_anuman} onChange={this.handleValueChange} type="text" placeholder="लागत अनुमान रु "/>
                             </div>
                             <div className="sub_title">
                                 <span>ख) लागत व्यहोर्ने स्रोतहरु</span>
                                 <table id="simple">
                                     <tr>
                                         <td><span>कार्यालय : <b id="required">*</b> </span></td>
-                                        <td><input name="lagat_behorne_karyalay" value={this.state.projectData.lagat_behorne_karyalay} onChange={this.updateText} type="text" placeholder="कार्यालय"/></td>
+                                        <td><input name="lagat_behorne_karyalay" value={this.state.sendingData.lagat_behorne_karyalay} onChange={this.handleValueChange} type="text" placeholder="कार्यालय"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>उपभोक्ता समिति : <b id="required">*</b></span></td>
-                                        <td><input name="lagat_behorne_upobhokta_samiti" value={this.state.projectData.lagat_behorne_upobhokta_samiti} onChange={this.updateText} type="text" placeholder="उपभोक्ता समिति"/></td>
+                                        <td><input name="lagat_behorne_upobhokta_samiti" value={this.state.sendingData.lagat_behorne_upobhokta_samiti} onChange={this.handleValueChange} type="text" placeholder="उपभोक्ता समिति"/></td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <span>अन्य :
-                                                <select name='lagat_behorne_anne_option' onChange={this.updateText}>
-                                                    {this.state.lagat_behorne_srot_options.map((item,index)=>{
-                                                        return <option selected={parseInt(this.state.projectData.lagat_behorne_anne_option)===parseInt(item.id)} value={item.id} key={index}>{item.lagat_behorne_srot}</option>
+                                                <select name='lagatBehorneSrotId' value={this.state.sendingData.lagatBehorneSrotId} onChange={this.handleValueChange}>
+                                                    <option value={0} selected={true} disabled={true}>---लागत व्यहोर्ने अन्य---</option>
+                                                    {this.state.receivedDetail.lagatBehorneSrots.map((lagatBehorneSrot,index)=>{
+                                                        return <option selected={lagatBehorneSrot.id===this.state.sendingData.lagatBehorneSrotId} value={lagatBehorneSrot.id} key={index}>{lagatBehorneSrot.name}</option>
                                                     })}
                                                 </select>
                                             </span>
                                         </td>
-                                        <td><input name="lagat_behorne_anne" value={this.state.projectData.lagat_behorne_anne} onChange={this.updateText} type="text" placeholder="अन्य"/></td>
+                                        <td><input name="lagat_behorne_anne" value={this.state.sendingData.lagat_behorne_anne} onChange={this.handleValueChange} type="text" placeholder="अन्य"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -366,44 +360,44 @@ export class Project_entry extends React.Component{
                                     <tr>
                                         <td><span>1</span></td>
                                         <td><span>संघबाट</span></td>
-                                        <td><input name='bastugat_anudan_sangbata_samagriko_naam' onChange={this.updateText} value={this.state.projectData.bastugat_anudan_sangbata_samagriko_naam} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_sangbata_ekai' value={this.state.projectData.bastugat_anudan_sangbata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_sangbata_samagriko_naam' onChange={this.handleValueChange} value={this.state.sendingData.bastugat_anudan_sangbata_samagriko_naam} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_sangbata_ekai' value={this.state.sendingData.bastugat_anudan_sangbata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>2</span></td>
                                         <td><span>प्रदेशबाट</span></td>
-                                        <td><input name='bastugat_anudan_pradeshbata_samagriko_naam' value={this.state.projectData.bastugat_anudan_pradeshbata_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_pradeshbata_ekai' value={this.state.projectData.bastugat_anudan_pradeshbata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_pradeshbata_samagriko_naam' value={this.state.sendingData.bastugat_anudan_pradeshbata_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_pradeshbata_ekai' value={this.state.sendingData.bastugat_anudan_pradeshbata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>3</span></td>
                                         <td><span>स्थानीय तहबाट</span></td>
-                                        <td><input name='bastugat_anudan_sthaniyebata_samagriko_naam' value={this.state.projectData.bastugat_anudan_sthaniyebata_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_sthaniyebata_ekai' value={this.state.projectData.bastugat_anudan_sthaniyebata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_sthaniyebata_samagriko_naam' value={this.state.sendingData.bastugat_anudan_sthaniyebata_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_sthaniyebata_ekai' value={this.state.sendingData.bastugat_anudan_sthaniyebata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>4</span></td>
                                         <td><span>गैह्रसरकारी तहबाट</span></td>
-                                        <td><input name='bastugat_anudan_gairasarakaribata_samagriko_naam' value={this.state.projectData.bastugat_anudan_gairasarakaribata_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_gairasarakaribata_ekai' value={this.state.projectData.bastugat_anudan_gairasarakaribata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_gairasarakaribata_samagriko_naam' value={this.state.sendingData.bastugat_anudan_gairasarakaribata_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_gairasarakaribata_ekai' value={this.state.sendingData.bastugat_anudan_gairasarakaribata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>5</span></td>
                                         <td><span>विदेशी दातृ निकायबाट</span></td>
-                                        <td><input name='bastugat_anudan_bideshbata_samagriko_naam' value={this.state.projectData.bastugat_anudan_bideshbata_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_bideshbata_ekai' value={this.state.projectData.bastugat_anudan_bideshbata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_bideshbata_samagriko_naam' value={this.state.sendingData.bastugat_anudan_bideshbata_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_bideshbata_ekai' value={this.state.sendingData.bastugat_anudan_bideshbata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>6</span></td>
                                         <td><span>उपभोक्ता समितिबाट</span></td>
-                                        <td><input name='bastugat_anudan_upobhoktasamitibata_samagriko_naam' value={this.state.projectData.bastugat_anudan_upobhoktasamitibata_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_upokhoktasamitibata_ekai' value={this.state.projectData.bastugat_anudan_upokhoktasamitibata_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_upobhoktasamitibata_samagriko_naam' value={this.state.sendingData.bastugat_anudan_upobhoktasamitibata_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_upokhoktasamitibata_ekai' value={this.state.sendingData.bastugat_anudan_upokhoktasamitibata_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>7</span></td>
                                         <td><span>अन्य निकायबाट</span></td>
-                                        <td><input name='bastugat_anudan_anne_samagriko_naam' value={this.state.projectData.bastugat_anudan_anne_samagriko_naam} onChange={this.updateText} type="text" placeholder="सामाग्रीको नाम"/> </td>
-                                        <td><input name='bastugat_anudan_anne_ekai' value={this.state.projectData.bastugat_anudan_anne_ekai} onChange={this.updateText} type="text" placeholder="एकाई"/> </td>
+                                        <td><input name='bastugat_anudan_anne_samagriko_naam' value={this.state.sendingData.bastugat_anudan_anne_samagriko_naam} onChange={this.handleValueChange} type="text" placeholder="सामाग्रीको नाम"/> </td>
+                                        <td><input name='bastugat_anudan_anne_ekai' value={this.state.sendingData.bastugat_anudan_anne_ekai} onChange={this.handleValueChange} type="text" placeholder="एकाई"/> </td>
                                     </tr>
                                 </table> :null }
                             </div>
@@ -412,14 +406,13 @@ export class Project_entry extends React.Component{
                             <span>३) उपभोक्ता समिति/गैरसरकारी सघसंस्था/समुदायमा आधारित संस्था सम्बन्धि विवरण </span>
                             <div className="sub_title" style={{display:'flex',flexDirection:'row'}}>
                                 <span style={{marginRight:'10px'}}>क) गठन भएको मिति : <b id="required">*</b></span>
-                                <NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.gathan_vayeko_miti = date; this.setState({projectData:projectData})}} placeholder="गठन भएको मिति" />
+                                <NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.gathan_vayeko_miti = date; this.setState({sendingData:sendingData})}} placeholder="गठन भएको मिति" />
                             </div>
                             <div className="sub_title">
                                 <span>ख) पदाधिकारीहरुको नाम <b id="required">*</b></span>
                                 <div className="sub_sub_title">
                                     <table border='1' id="border_collapse">
                                         <tr>
-                                            <td><span>पद चयन</span></td>
                                             <td><span>क्र.सं.</span></td>
                                             <td><span>पद</span></td>
                                             <td><span>नाम,थर</span></td>
@@ -428,21 +421,16 @@ export class Project_entry extends React.Component{
                                             <td><span>जिल्ला</span></td>
                                             <td><span>हटाउनुहोस</span></td>
                                         </tr>
-                                        {this.state.projectData.padadhikariharu.map((item,index)=> {
-                                            var padadhikariharu = this.state.projectData.padadhikariharu;
+                                        {this.state.sendingData.padadhikariharu.map((item,index)=> {
+                                            var padadhikariharu = this.state.sendingData.padadhikariharu;
                                             return <tr key={index}>
-                                                <td>
-                                                    <select onChange={(event)=>{padadhikariharu[index].pada_id = event.target.value; this.setState({padadhikariharu:padadhikariharu});}}>
-                                                        {this.state.padadhikari_pada_options.map((item,index)=>{
-                                                            return <option value={item.id} key={index}>{item.pada}</option>
-                                                        })}
-                                                    </select>
-                                                </td>
                                                 <td>{index + 1}</td>
                                                 <td>
-                                                    {this.state.padadhikari_pada_options.map((item1,index)=>{
-                                                        return parseInt(item1.id)===parseInt(item.pada_id) ? item1.pada : null;
-                                                    })}
+                                                    <select value={padadhikariharu[index].padadhikariPadaId} onChange={(event)=>{padadhikariharu[index].padadhikariPadaId = event.target.value; this.setState({padadhikariharu:padadhikariharu});}}>
+                                                        {this.state.receivedDetail.padadhikariPadas.map((padadhikariPada,i)=>{
+                                                            return <option value={padadhikariPada.id} key={i}>{padadhikariPada.pada}</option>
+                                                        })}
+                                                    </select>
                                                 </td>
                                                 <td><input value={item.name} onChange={(event)=>{padadhikariharu[index].name = event.target.value;this.setState({padadhikariharu:padadhikariharu});}} type="text" placeholder="नाम"/> </td>
                                                 <td><input value={item.thegana} onChange={(event)=>{padadhikariharu[index].thegana = event.target.value;this.setState({padadhikariharu:padadhikariharu});}} type="text" placeholder="ठेगाना"/> </td>
@@ -452,23 +440,19 @@ export class Project_entry extends React.Component{
                                             </tr>
                                         })}
                                         <tr>
+                                            <td>{this.state.sendingData.padadhikariharu.length+1}</td>
                                             <td>
-                                                <select name="padadhikariharu_pada_id" onChange={this.updateText}>
-                                                    {this.state.padadhikari_pada_options.map((item,index)=>{
-                                                        return <option value={item.id} key={index}>{item.pada}</option>
+                                                <select name="padadhikariPadaId" value={this.state.padadhikariPadaId} onChange={this.handleValueChange}>
+                                                    <option selected={true} value={0} disabled={true}>--- पदाधिकारी पद ---</option>
+                                                    {this.state.receivedDetail.padadhikariPadas.map((padadhikariPada,index)=>{
+                                                        return <option value={padadhikariPada.id} key={index}>{padadhikariPada.pada}</option>
                                                     })}
                                                 </select>
                                             </td>
-                                            <td>{this.state.projectData.padadhikariharu.length+1}</td>
-                                            <td>
-                                                {this.state.padadhikari_pada_options.map((item1,index)=>{
-                                                return parseInt(item1.id)===parseInt(this.state.padadhikariharu_pada_id) ? item1.pada : null;
-                                            })}
-                                            </td>
-                                            <td><input name="padadhikariharu_name" value={this.state.padadhikariharu_name} onChange={this.updateText} type="text" placeholder="नाम"/></td>
-                                            <td><input name="padadhikariharu_thegana" value={this.state.padadhikariharu_thegana} onChange={this.updateText} type="text" placeholder="ठेगाना"/></td>
-                                            <td><input name="padadhikariharu_na_na" value={this.state.padadhikariharu_na_na} onChange={this.updateText} type="text" placeholder="नागरिकता नं."/></td>
-                                            <td><input name="padadhikariharu_jilla" value={this.state.padadhikariharu_jilla} onChange={this.updateText} type="text" placeholder="जिल्ला"/></td>
+                                            <td><input name="padadhikariharu_name" value={this.state.padadhikariharu_name} onChange={this.handleValueChange} type="text" placeholder="नाम"/></td>
+                                            <td><input name="padadhikariharu_thegana" value={this.state.padadhikariharu_thegana} onChange={this.handleValueChange} type="text" placeholder="ठेगाना"/></td>
+                                            <td><input name="padadhikariharu_na_na" value={this.state.padadhikariharu_na_na} onChange={this.handleValueChange} type="text" placeholder="नागरिकता नं."/></td>
+                                            <td><input name="padadhikariharu_jilla" value={this.state.padadhikariharu_jilla} onChange={this.handleValueChange} type="text" placeholder="जिल्ला"/></td>
                                         </tr>
                                     </table>
                                     <button id="button" onClick={this.handleAddTableRow}>थप्नुहोस</button>
@@ -476,12 +460,12 @@ export class Project_entry extends React.Component{
                             </div>
                             <div className="sub_title">
                                 <span>ख) उपभोक्ता समिति गठन गर्दा उपस्थित लाभान्वितको संख्या : <b id="required">*</b> </span>
-                                <input name="upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya" value={this.state.projectData.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya} onChange={this.updateText} type="text" placeholder="लाभान्वितको संख्या"/>
+                                <input name="upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya" value={this.state.sendingData.upobhokta_samiti_gathan_garda_upasthit_labhanbit_sangkhya} onChange={this.handleValueChange} type="text" placeholder="लाभान्वितको संख्या"/>
                             </div>
                         </div>
                         <div className="title">
                             <span>४) आयोजना संचालन सम्बन्धि अनुभव वर्ष : <b id="required">*</b> </span>
-                            <input name="anubhav_barsa" value={this.state.projectData.anubhav_barsa} onChange={this.updateText}  type="text" placeholder="अनुभव वर्ष "/>
+                            <input name="anubhav_barsa" value={this.state.sendingData.anubhav_barsa} onChange={this.handleValueChange}  type="text" placeholder="अनुभव वर्ष "/>
                         </div>
                         <div className="title">
                             <span id="dropdown_option" onClick={()=>{this.setState({show_kistako_biwaran:!this.state.show_kistako_biwaran})}}>५) उपभोक्ता समिति/समुदायका आधारित संघ/गैरसरकारी संस्थाले प्राप्त गर्ने किस्ताको विवरण </span>
@@ -497,31 +481,31 @@ export class Project_entry extends React.Component{
                                     </tr>
                                     <tr>
                                         <td><span>प्रथम</span></td>
-                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.pratham_miti = date; this.setState({projectData:projectData})}} placeholder="मिति" /> </td>
-                                        <td><input name="pratham_rakam" value={this.state.projectData.pratham_rakam} onChange={this.updateText} type="text" placeholder="रकम"/> </td>
-                                        <td><input name="pratham_samagriko_pariman" value={this.state.projectData.pratham_samagriko_pariman} onChange={this.updateText} type="text" placeholder="परिमाण"/> </td>
-                                        <td><input name="pratham_kaifiyet" value={this.state.projectData.pratham_kaifiyet} onChange={this.updateText} type="text" placeholder="कैफियत"/> </td>
+                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.pratham_miti = date; this.setState({sendingData:sendingData})}} placeholder="मिति" /> </td>
+                                        <td><input name="pratham_rakam" value={this.state.sendingData.pratham_rakam} onChange={this.handleValueChange} type="text" placeholder="रकम"/> </td>
+                                        <td><input name="pratham_samagriko_pariman" value={this.state.sendingData.pratham_samagriko_pariman} onChange={this.handleValueChange} type="text" placeholder="परिमाण"/> </td>
+                                        <td><input name="pratham_kaifiyet" value={this.state.sendingData.pratham_kaifiyet} onChange={this.handleValueChange} type="text" placeholder="कैफियत"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>दोस्रो</span></td>
-                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.dorshro_miti = date; this.setState({projectData:projectData})}} placeholder="मिति" /> </td>
-                                        <td><input name="dorshro_rakam" value={this.state.projectData.dorshro_rakam} onChange={this.updateText} type="text" placeholder="रकम"/> </td>
-                                        <td><input name="dorshro_samagriko_pariman" value={this.state.projectData.dorshro_samagriko_pariman} onChange={this.updateText} type="text" placeholder="परिमाण"/> </td>
-                                        <td><input name="dorshro_kaifiyet" value={this.state.projectData.dorshro_kaifiyet} onChange={this.updateText} type="text" placeholder="कैफियत"/> </td>
+                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.dorshro_miti = date; this.setState({sendingData:sendingData})}} placeholder="मिति" /> </td>
+                                        <td><input name="dorshro_rakam" value={this.state.sendingData.dorshro_rakam} onChange={this.handleValueChange} type="text" placeholder="रकम"/> </td>
+                                        <td><input name="dorshro_samagriko_pariman" value={this.state.sendingData.dorshro_samagriko_pariman} onChange={this.handleValueChange} type="text" placeholder="परिमाण"/> </td>
+                                        <td><input name="dorshro_kaifiyet" value={this.state.sendingData.dorshro_kaifiyet} onChange={this.handleValueChange} type="text" placeholder="कैफियत"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>तेस्रो</span></td>
-                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.teshro_miti = date; this.setState({projectData:projectData})}} placeholder="मिति" /> </td>
-                                        <td><input name="teshro_rakam" value={this.state.projectData.teshro_rakam} onChange={this.updateText} type="text" placeholder="रकम"/> </td>
-                                        <td><input name="teshro_samagriko_pariman" value={this.state.projectData.teshro_samagriko_pariman} onChange={this.updateText} type="text" placeholder="परिमाण"/> </td>
-                                        <td><input name="teshro_kaifiyet" value={this.state.projectData.teshro_kaifiyet} onChange={this.updateText} type="text" placeholder="कैफियत"/> </td>
+                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.teshro_miti = date; this.setState({sendingData:sendingData})}} placeholder="मिति" /> </td>
+                                        <td><input name="teshro_rakam" value={this.state.sendingData.teshro_rakam} onChange={this.handleValueChange} type="text" placeholder="रकम"/> </td>
+                                        <td><input name="teshro_samagriko_pariman" value={this.state.sendingData.teshro_samagriko_pariman} onChange={this.handleValueChange} type="text" placeholder="परिमाण"/> </td>
+                                        <td><input name="teshro_kaifiyet" value={this.state.sendingData.teshro_kaifiyet} onChange={this.handleValueChange} type="text" placeholder="कैफियत"/> </td>
                                     </tr>
                                     <tr>
                                         <td><span>जम्मा</span></td>
-                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.jamma_miti = date; this.setState({projectData:projectData})}} placeholder="मिति" /> </td>
-                                        <td><input name="jamma_rakam" value={this.state.projectData.jamma_rakam} onChange={this.updateText} type="text" placeholder="रकम"/> </td>
-                                        <td><input name="jamma_samagriko_pariman" value={this.state.projectData.jamma_samagriko_pariman} onChange={this.updateText} type="text" placeholder="परिमाण"/> </td>
-                                        <td><input name="jamma_kaifiyet" value={this.state.projectData.jamma_kaifiyet} onChange={this.updateText} type="text" placeholder="कैफियत"/> </td>
+                                        <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.jamma_miti = date; this.setState({sendingData:sendingData})}} placeholder="मिति" /> </td>
+                                        <td><input name="jamma_rakam" value={this.state.sendingData.jamma_rakam} onChange={this.handleValueChange} type="text" placeholder="रकम"/> </td>
+                                        <td><input name="jamma_samagriko_pariman" value={this.state.sendingData.jamma_samagriko_pariman} onChange={this.handleValueChange} type="text" placeholder="परिमाण"/> </td>
+                                        <td><input name="jamma_kaifiyet" value={this.state.sendingData.jamma_kaifiyet} onChange={this.handleValueChange} type="text" placeholder="कैफियत"/> </td>
                                     </tr>
                                 </table>
                             </div> : null }
@@ -533,27 +517,27 @@ export class Project_entry extends React.Component{
                                 <table id="simple">
                                     <tr>
                                         <td><span>क) आयोजना मर्मत सम्भारको जिम्मा लिने/समिति संस्थाको नाम : </span></td>
-                                        <td> <input name="yojana_marmat_jimma_line_samiti" value={this.state.projectData.yojana_marmat_jimma_line_samiti} onChange={this.updateText} type="text" placeholder="संस्थाको नाम"/></td>
+                                        <td> <input name="yojana_marmat_jimma_line_samiti" value={this.state.sendingData.yojana_marmat_jimma_line_samiti} onChange={this.handleValueChange} type="text" placeholder="संस्थाको नाम"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>ख) मर्मत सम्भारको सम्भावित श्रोत  (छ छैन खुलाउने) : </span></td>
-                                        <td><input name="marmat_sambhabit_srot" value={this.state.projectData.marmat_sambhabit_srot} onChange={this.updateText} type="text" placeholder="मर्मत सम्भारको सम्भावित श्रोत"/></td>
+                                        <td><input name="marmat_sambhabit_srot" value={this.state.sendingData.marmat_sambhabit_srot} onChange={this.handleValueChange} type="text" placeholder="मर्मत सम्भारको सम्भावित श्रोत"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>ग) जनश्रमदान : </span></td>
-                                        <td><input name="janasramdan" value={this.state.projectData.janasramdan} onChange={this.updateText} type="text" placeholder="जनश्रमदान"/></td>
+                                        <td><input name="janasramdan" value={this.state.sendingData.janasramdan} onChange={this.handleValueChange} type="text" placeholder="जनश्रमदान"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>घ) सेवा शुल्क : </span></td>
-                                        <td><input name="sewa_sulka" value={this.state.projectData.sewa_sulka} onChange={this.updateText} type="text" placeholder="सेवा शुल्क"/></td>
+                                        <td><input name="sewa_sulka" value={this.state.sendingData.sewa_sulka} onChange={this.handleValueChange} type="text" placeholder="सेवा शुल्क"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>ङ) दस्तुर चन्दाबाट : </span></td>
-                                        <td><input name="dastur_chandabata" value={this.state.projectData.dastur_chandabata} onChange={this.updateText} type="text" placeholder="दस्तुर चन्दाबाट"/></td>
+                                        <td><input name="dastur_chandabata" value={this.state.sendingData.dastur_chandabata} onChange={this.handleValueChange} type="text" placeholder="दस्तुर चन्दाबाट"/></td>
                                     </tr>
                                     <tr>
                                         <td><span>च) अन्य केही भए : </span></td>
-                                        <td><input name="anne_kehi_vaye" value={this.state.projectData.anne_kehi_vaye} onChange={this.updateText} type="text" placeholder="अन्य केही भए"/></td>
+                                        <td><input name="anne_kehi_vaye" value={this.state.sendingData.anne_kehi_vaye} onChange={this.handleValueChange} type="text" placeholder="अन्य केही भए"/></td>
                                     </tr>
                                 </table>
                             </div> : false }
@@ -564,33 +548,35 @@ export class Project_entry extends React.Component{
                                 <table id="simple">
                                     <tr>
                                         <td><span>क) प्रमुख प्रशासकीयक अधिकृतको नाम, थर : <b id="required">*</b> </span></td>
-                                        <select name="pramukha_prashasakiyeko_name" onChange={this.updateText}>
-                                            {this.state.ppa_options.map((item,index)=>{
-                                                return <option selected={parseInt(this.state.projectData.pramukha_prashasakiyeko_name)===parseInt(item.id)} value={item.id} key={index}>{item.ppa_name}</option>
+                                        <select name="ppaId" value={this.state.sendingData.ppaId} onChange={this.handleValueChange}>
+                                            <option selected={true} value={0} disabled={true} >---प्रमुख प्रशासकीय अधिकृत---</option>
+                                            {this.state.receivedDetail.ppas.map((ppa,index)=>{
+                                                return <option value={ppa.id} key={index}>{ppa.name}</option>
                                             })}
                                         </select>
                                     </tr>
                                     <tr>
                                         <td><span>ख) आयोजना हुने वडा नं. : <b id="required">*</b></span></td>
                                         <td>
-                                            <select name="aayojana_hune_woda" onChange={this.updateText}>
-                                                {this.state.ward_options.map((item,index)=>{
-                                                    return <option selected={parseInt(this.state.projectData.aayojana_hune_woda)===parseInt(item.id)} value={item.id} key={index}>{item.ward_number} नं. वडा, {item.ward_name}</option>
+                                            <select name="wardId" value={this.state.sendingData.wardId} onChange={this.handleValueChange}>
+                                                <option selected={true} value={0} disabled={true} >---आयोजना हुने वडा---</option>
+                                                {this.state.receivedDetail.wards.map((ward,index)=>{
+                                                    return <option value={ward.id} key={index}>{ward.number} नं. वडा, {ward.name}</option>
                                                 })}
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><span>ग) आयोजनाको अन्तिम मिति. : <b id="required">*</b></span></td>
-                                        <td> <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let projectData =  this.state.projectData; projectData.aayojana_ante_miti = date; this.setState({projectData:projectData})}} placeholder=" आयोजना अन्त्य मिति" /> </td></td>
+                                        <td> <td><NepaliDatePicker defaultDate={true} onDateSelect={(date)=>{let sendingData =  this.state.sendingData; sendingData.aayojana_ante_miti = date; this.setState({sendingData:sendingData})}} placeholder=" आयोजना अन्त्य मिति" /> </td></td>
                                     </tr>
                                     <tr>
                                         <td><span>घ) समितिको अध्यक्षको सम्पर्क नं. : <b id="required">*</b></span></td>
-                                        <td><input name="adaxyako_number" value={this.state.projectData.adaxyako_number} onChange={this.updateText} type="text" placeholder="अध्यक्षको सम्पर्क नं."/></td>
+                                        <td><input name="adaxyako_number" value={this.state.sendingData.adaxyako_number} onChange={this.handleValueChange} type="text" placeholder="अध्यक्षको सम्पर्क नं."/></td>
                                     </tr>
                                     <tr>
                                         <td><span>ङ) कैफियत : </span></td>
-                                        <td><input name="kaifiyet" value={this.state.projectData.kaifiyet} onChange={this.updateText}  type="text" placeholder="कैफियत"/></td>
+                                        <td><input name="kaifiyet" value={this.state.sendingData.kaifiyet} onChange={this.handleValueChange}  type="text" placeholder="कैफियत"/></td>
                                     </tr>
                                 </table>
                             </div>
@@ -599,14 +585,16 @@ export class Project_entry extends React.Component{
                     <div id="controls">
                         <div id="errors">
                             {this.state.errors.map((item,index)=>{
-                                return <span key={index}>{item}</span>
+                                return <span className='error' key={index}>{item}</span>
                             })}
                         </div>
-                        <div id="submitStatus">
-                            {this.state.submitStatus}
+                        <div id="messages">
+                            <span className='message'>
+                                {this.state.message}
+                            </span>
                         </div>
-                        {this.state.submitSuccess ?
-                            <Link to={{pathname:'/agree', id:this.state.submitSuccessId}}>प्रिन्ट गर्नुहोस</Link> : <button onClick={this.handleSubmit}>सुरक्षित गर्नुहोस</button>
+                        {this.state.submitId!==null ?
+                            <Link to={{pathname:'/agree', id:this.state.submitId}}>प्रिन्ट गर्नुहोस</Link> : <button onClick={this.handleSubmit}>सुरक्षित गर्नुहोस</button>
                         }
                     </div>
                 </div>

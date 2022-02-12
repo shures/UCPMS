@@ -93,10 +93,7 @@
     border: 1px solid rgba(0,0,0,0.3);
     padding: 0 3px 0 3px;
 }
-table#border_collapse>tr>td:first-child{
-    background-color: gray;
-    color: black;
-}
+
 
 #project_entry input{
     font-weight: bold;
@@ -115,8 +112,6 @@ table#border_collapse>tr>td:first-child{
     border: none;
     padding: 0;
     margin: 0;
-    background-color: gray;
-    color: whitesmoke;
 }
 #project_entry #button{
     margin-left: 15px;

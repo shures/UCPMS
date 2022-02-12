@@ -46,6 +46,14 @@
     padding: 5px;
     margin-top: 2px;
 }
+#report>#container>#project>#searchCategory{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+}
+#report>#container>#project>#searchCategory>.item{
+    margin-right: 10px;
+}
 #report>#container>#controls{
     display: flex;
     flex-direction: row;
@@ -119,6 +127,9 @@
     color:black;
 }
 #report>#container>#project>#search_result>table td{
+
+}
+#report>#container>#project>#search_result>table th{
 
 }
 #report>#container>#project>#search_result>table img{

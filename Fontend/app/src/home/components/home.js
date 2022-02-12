@@ -13,8 +13,6 @@ export class Home extends React.Component{
                 selected:null,
                 current:null,
             },
-            selectedAaba:null,
-            currentAaba:null,
             barChartData:[],
             munReport:{},
             wardReport:[],
@@ -31,21 +29,27 @@ export class Home extends React.Component{
             data: {setting:'aa_ba'},
         }).then((response)=>{
             let aa_ba =  this.state.aa_ba;
-            aa_ba.selected = response.data[1].option;
+            aa_ba.selected = response.data.option;
             this.setState({aa_ba:aa_ba});
         }).catch(function (error) {
 
         });
+
         let bs = require('bikram-sambat');
         let english_date = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`;
         let nepali_date = bs.toBik_text(english_date);
 
         let fy_year = bs.toBik_euro(english_date);
-        let year = parseInt(fy_year.substr(2, 2));
-        let nextYear = parseInt(year)+1;
-        let fy = year+'/'+nextYear;
+        let currentYear = parseInt(fy_year.substr(0, 4));
+        let nextYear = parseInt(currentYear)+1;
+        let currentAaBa = parseInt(currentYear+'/'+nextYear.toString().substr(2,2));
 
-        this.setState({nepaliDate:nepali_date,fy:fy});
+        localStorage.setItem('currentAaBa',currentAaBa);
+
+        let aa_ba = this.state.aa_ba;
+        aa_ba.current = currentAaBa;
+        this.setState({nepaliDate:nepali_date,aa_ba:aa_ba});
+
          axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getBarChart',
@@ -80,17 +84,16 @@ export class Home extends React.Component{
             url: localStorage.getItem('server')+'api/getWardReport',
             data: {},
         }).then((response)=>{
-            console.log(response.data);
             this.setState({wardReport:response.data});
         }).catch(function (error) {
 
         });
         axios({
             method: 'post',
-            url: localStorage.getItem('server')+'api/getDetail',
-            data: {options:'progressReport',fy:'78/79'},
+            url: localStorage.getItem('server')+'api/getProgressReport',
+            data: {},
         }).then((response)=>{
-            console.log(response.data);
+            console.log('ward report'+""+JSON.stringify(response.data));
             let sampanna_yojanaharu = 0;
             let jamma_yojanaharu = 0;
             response.data[1].forEach((item,index,arr)=>{
@@ -117,7 +120,7 @@ export class Home extends React.Component{
                             <span>Project Management Information System</span>
                         </div>
                         <div id="time">
-                            <span>चालु आर्थिक बर्ष : {this.state.fy},</span>
+                            <span>चालु आर्थिक बर्ष : {this.state.aa_ba.current},</span>
                             <span>मिति : {this.state.nepaliDate}</span>
                         </div>
                         <div id="user">

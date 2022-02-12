@@ -80,26 +80,6 @@
     background-color: green;
     color:white;
 }
-#option_entry>#container>#entry>#control>#error{
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-}
-#option_entry>#container>#entry>#control>#error>span{
-    color:brown;
-    font-size: 14px;
-    padding: 3px;
-}
-#option_entry>#container>#entry>#control>#status{
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-}
-#option_entry>#container>#entry>#control>#status>span{
-    color:darkgreen;
-    font-size: 14px;
-    padding: 3px;
-}
 #option_entry>#container>#record{
     display: flex;
     flex-direction: column;
@@ -127,4 +107,7 @@
 #option_entry>#container>#record>table>tr:nth-child(1) {
     color:black;
     font-weight: bold;
+}
+#record img{
+    height: 20px;
 }

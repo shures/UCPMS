@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController\UserController;
 use App\Http\Controllers\ContentController\ProjectDataController;
 use App\Http\Controllers\ContentController\ProjectOptionController;
+use App\Http\Controllers\ContentController\Setting;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::post("put_option",[ProjectOptionController::class,'put_option']);
 Route::post("getOptionRecord",[ProjectOptionController::class,'getOptionRecord']);
 Route::post("getProject",[ProjectDataController::class,'getProject']);
 Route::post("getOptions",[ProjectOptionController::class,'getOptions']);
+Route::post("deleteDetail",[ProjectOptionController::class,'deleteDetail']);
 Route::post("searchProject",[ProjectDataController::class,'searchProject']);
 Route::post("getSifaris",[ProjectDataController::class,'getSifaris']);
 Route::post("getProjects",[ProjectDataController::class,'getProjects']);
@@ -38,5 +40,5 @@ Route::post("getBarChart",[ProjectDataController::class,'getBarChart']);
 Route::post("getMunReport",[ProjectDataController::class,'getMunReport']);
 Route::post("getWardReport",[ProjectDataController::class,'getWardReport']);
 Route::post("putSetting",[ProjectOptionController::class,'putSetting']);
-Route::post("getDetail",[ProjectDataController::class,'getDetail']);
-Route::post("getSetting",[ProjectOptionController::class,'getSetting']);
+Route::post("getProgressReport",[ProjectDataController::class,'getProgressReport']);
+Route::post("getSetting",[Setting::class,'getSetting']);
