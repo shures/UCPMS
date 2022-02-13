@@ -8,104 +8,152 @@ export class Sifaris extends React.Component{
     constructor() {
         super();
         this.state = {
-            sifaris_selected : "ao",
-            bank_options:[],
-            selectedBankOptionIndex:0,
-            letterDate:'',
-            aayojana_naam:'',
-            searchedProjects:[],
-            projectId:null,
+            values:{
+                projectName:'',
+                bankIndex:'',
+                letterDate:'',
+            },
+            receivedData:{
+                banks:[{}],
+                projects:[],
+                project:{},
+                projectPadadhikaris:[{}],
+                projectPadadhikariVitalPosts:[],
+                aa_ba:''
+            },
+            sendingData:{
 
-            project:[],
-            padadhikariharu:[],
-            jamma_padadhikariharu:'',
+            },
+            sifaris_selected : "ao",
+
         }
-        this.handleUpdate = this.handleUpdate.bind(this);
-        this.handleGetSifaris = this.handleGetSifaris.bind(this);
+        this.handleValueChange = this.handleValueChange.bind(this);
+        this.handleGetProject = this.handleGetProject.bind(this);
+        this.handleRemoveVitalPost = this.handleRemoveVitalPost.bind(this);
     }
     componentDidMount() {
         axios({
             method: 'post',
             url: localStorage.getItem('server')+'api/getOptions',
-            data: {},
+            data: {detail:'bank'},
         }).then((response)=> {
-            if (response.data.bank_options) {
-                this.setState({bank_options:response.data.bank_options});
-            }
+            let receivedData = this.state.receivedData;
+            receivedData.banks = response.data;
+            this.setState({receivedData:receivedData});
+        }).catch((res)=>{
+
+        });
+        axios({
+            method: 'post',
+            url: localStorage.getItem('server')+'api/getSetting',
+            data: {setting:'aa_ba'},
+        }).then((response)=> {
+            let receivedData = this.state.receivedData;
+            receivedData.aa_ba = response.data['option'];
+            this.setState({receivedData:receivedData});
         }).catch((res)=>{
 
         })
     }
-    handleGetSifaris(id,aayojana_naam,aayojana_sthal){
-        this.setState({aayojana_naam:aayojana_naam +' '+ aayojana_sthal,searchedProjects:[],projectId:id},()=>{
+    handleGetProject(id,aayojanako_naam,aayojanako_sthal){
+        let values = this.state.values;
+        values.projectName = aayojanako_naam+' '+aayojanako_sthal;
+
+        let recevedData = this.state.receivedData;
+        recevedData.projects = [];
+        this.setState({values:values,recevedData:recevedData},()=>{
             axios({
                 method: 'post',
-                url: localStorage.getItem('server')+'api/getSifaris',
-                data: {id:this.state.projectId},
+                url: localStorage.getItem('server')+'api/getProject',
+                data: {projectId:id},
             }).then((response)=>{
-                this.setState({project:response.data[1],padadhikariharu:response.data[2],jamma_padadhikariharu:response.data[3]});
-                console.log(response.data[3]);
+                let receivedData = this.state.receivedData;
+                receivedData.project = response.data[1];
+                receivedData.projectPadadhikaris = response.data[2];
+                let projectPadadhikariVitalPosts = [];
+                response.data[2].forEach((item,index,array)=>{
+                    if(item.vitalPost){projectPadadhikariVitalPosts.push(item);}
+                })
+                receivedData.projectPadadhikariVitalPosts = projectPadadhikariVitalPosts;
+
+                this.setState({receivedData:receivedData});
             }).catch(function (error) {
                 console.log(error);
             });
         })
     }
-    handleUpdate(event){
+    handleValueChange(event){
         let value = event.target.value;
         let name = event.target.name;
-        if(name==="aayojana_naam"){
-            this.setState({aayojana_naam:value},()=>{
+        let values = this.state.values;
+        if(name==="bankIndex"){
+            values.bankIndex = value;
+            this.setState({values:values})
+        }
+        if(name==="projectName"){
+            values.projectName = value;
+            this.setState({values:values},()=>{
                 axios({
                     method: 'post',
-                    url: localStorage.getItem('server')+'api/searchProject',
-                    data: {aayojana_naam:value},
+                    url: localStorage.getItem('server')+'api/getSearch',
+                    data: {projectName:this.state.values.projectName},
                 }).then((response)=>{
-                    this.setState({searchedProjects:response.data[1]})
-                   console.log(response.data);
+                    if(response.data[0]===0){
+
+                    }else if(response.data[0]===1){
+                        let receivedData = this.state.receivedData;
+                        receivedData.projects = response.data[1];
+                        this.setState({receivedData:receivedData});
+                    }
                 }).catch(function (error) {
                     console.log(error);
                 });
             });
         }
     }
+    handleRemoveVitalPost(id){
+        let receivedData = this.state.receivedData;
+        receivedData.projectPadadhikariVitalPosts.splice(id, 1);
+        this.setState({receivedData:receivedData});
+    }
     render() {
         return (
-            <div id='sifaris'>
+            <React.Fragment>
                 <Header/>
-                <div id="container">
+                <div id="sifaris">
                     <div id="title">
                         योजना सम्बन्धि विभिन्न सिफारिसहरु
                     </div>
-                    <div id="project">
+                    <div id="container">
                         <div id="entry">
                             <div id="select_sifaris">
                                 <button style={this.state.sifaris_selected === "ao" ? {color: 'white',backgroundColor: 'green'} : {}} onClick={()=>{this.setState({sifaris_selected:"ao"})}}>खाता संचालन सिफारिस</button>
                                 <button style={this.state.sifaris_selected === "ac" ? {color: 'white',backgroundColor: 'green'} : {}} onClick={()=>{this.setState({sifaris_selected:"ac"})}}>खाता बन्द सिफारिस</button>
                             </div>
                             <div id="select_people">
-                                <input type="checkbox" checked="checked"/> <span>अध्यक्ष</span>
-                                <input type="checkbox" checked="checked"/> <span>सचिव</span>
-                                <input type="checkbox" checked="checked"/> <span>कोषादध्क्ष</span>
+                                {this.state.receivedData.projectPadadhikariVitalPosts.map((item,index)=>{
+                                    return <React.Fragment><input key={index} type="checkbox" checked="checked" onClick={()=>{this.handleRemoveVitalPost(index)}}/> <span> {item.pada} </span></React.Fragment>
+                                })}
                             </div>
                             <div id="sifaris_data">
                                 <div className="item">
                                     <div id="input">
                                         <span>योजना खोज्नुहोस</span>
-                                        <input name="aayojana_naam" value={this.state.aayojana_naam} onChange={this.handleUpdate} type="text" placeholder="योजनाको नाम "/>
+                                        <input name="projectName" value={this.state.values.projectName} onChange={this.handleValueChange} type="text" placeholder="योजनाको नाम "/>
                                     </div>
-                                    {this.state.searchedProjects.length>0 ?
                                     <div id="result">
-                                        {this.state.searchedProjects.map((item,index)=>{
-                                            return <span onClick={()=>{this.handleGetSifaris(item.id,item.aayojanako_naam,item.aayojanako_sthal)}} className="item">{item.aayojanako_naam}, {item.aayojanako_sthal}</span>
+                                        {this.state.receivedData.projects.map((item,index)=>{
+                                            return <span onClick={()=>{this.handleGetProject(item.id,item.aayojanako_naam,item.aayojanako_sthal)}} className="item">{item.aayojanako_naam}, {item.aayojanako_sthal}</span>
                                         })}
-                                    </div> : null }
+                                    </div>
                                 </div>
                                 <div className="item">
                                     <div id="input">
                                         <span>बैङ्कको नाम र ठेगाना</span>
-                                        <select onChange={(event)=>{this.setState({selectedBankOptionIndex:event.target.value})}}>
-                                            {this.state.bank_options.map((item,index)=>{
-                                                return <option value={index} key={index}>{item.bank_name+","+item.bank_sakha+","+item.bank_thegana}</option>
+                                        <select name='bankIndex' value={this.state.values.bankIndex} onChange={this.handleValueChange}>
+                                           <option selected={true} value='' disabled={true}>---बैङ्कहरु---</option>
+                                            {this.state.receivedData.banks.map((item,index)=>{
+                                                return <option value={index} key={index}>{item.name+","+item.branch+","+item.addr}</option>
                                             })}
                                         </select>
                                     </div>
@@ -113,7 +161,7 @@ export class Sifaris extends React.Component{
                                 <div className="item">
                                     <div id="input">
                                         <span>पत्रको मिति</span>
-                                        <NepaliDatePicker onDateSelect={(date)=>{this.setState({letterDate:date})}} className="date_picker"  defaultDate={true} placeholder="पत्रको मिति" />
+                                        <NepaliDatePicker onDateSelect={(date)=>{let values = this.state.values; values.letterDate = date;this.setState({values:values})}} className="date_picker"  defaultDate={true} placeholder="पत्रको मिति" />
                                     </div>
                                 </div>
                                 {this.state.sifaris_selected==="ac" ?
@@ -135,41 +183,19 @@ export class Sifaris extends React.Component{
                             </div>
                         </div>
                         <div id="print_preview">
-                            {this.state.bank_options.length>0 ? <SifarisPrint letterDate= {this.state.letterDate} selectedBankOption = {this.state.bank_options[this.state.selectedBankOptionIndex]} jamma_padadhikariharu={this.state.jamma_padadhikariharu} padadhikariharu={this.state.padadhikariharu} project={this.state.project} ref={el => (this.componentRef = el)} /> : null }
+                            <PrintPreview letterDate= {this.state.values.letterDate} bank = { this.state.values.bankIndex!=="" ? this.state.receivedData.banks[this.state.values.bankIndex] : {}} project={this.state.receivedData.project}  projectPadadhikariVitalPost={this.state.receivedData.projectPadadhikariVitalPosts} totalProjectPadadhikari={this.state.receivedData.projectPadadhikaris.length} aa_ba={this.state.receivedData.aa_ba} ref={el => (this.componentRef = el)} />
                         </div>
                     </div>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }
-class SifarisPrint extends React.PureComponent {
+class PrintPreview extends React.PureComponent {
     constructor() {
         super();
         this.state={
-            upabhokta_samitiko_naam : '',
-            aayojanako_naam : '',
-            aayojanako_sthal : '',
-            aayojana_suru_miti : '',
-            gathan_vayeko_miti :'',
-
-            padadhikariharu_1_id:null,
-            padadhikariharu_1_name:'',
-            padadhikariharu_1_pada:1,
-            padadhikariharu_1_na_na:'',
-            padadhikariharu_2_id:null,
-            padadhikariharu_2_name:'',
-            padadhikariharu_2_pada:1,
-            padadhikariharu_3_id:null,
-            padadhikariharu_3_name:'',
-            padadhikariharu_3_pada:1,
-
-            aayojana_hune_woda:'',
-            jamma_padadhikariharu:'',
-
-            selectedBankOption:{},
-            letterDate:'',
-            aa_ba:'',
+            projectPadadhikaris:[{}],
         }
     }
     componentDidMount() {
@@ -177,42 +203,8 @@ class SifarisPrint extends React.PureComponent {
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
-            upabhokta_samitiko_naam : nextProps.project.upabhokta_samitiko_naam,
-            aayojanako_naam : nextProps.project.aayojanako_naam,
-            aayojanako_sthal : nextProps.project.aayojanako_sthal,
-            aayojana_suru_miti : nextProps.project.aayojana_suru_miti,
-            gathan_vayeko_miti :nextProps.project.gathan_vayeko_miti,
-            aayojana_hune_woda:nextProps.project.aayojana_hune_woda,
-            jamma_padadhikariharu:nextProps.jamma_padadhikariharu.jamma_padadhikariharu,
 
-            selectedBankOption:nextProps.selectedBankOption,
-            letterDate:nextProps.letterDate,
-            aa_ba:parseInt(nextProps.letterDate.substr(2,4)),
         });
-        for(let i=0;i<nextProps.padadhikariharu.length;i++){
-            if(nextProps.padadhikariharu[i].id===1){
-                this.setState({
-                    padadhikariharu_1_id:nextProps.padadhikariharu[i].id,
-                    padadhikariharu_1_name:nextProps.padadhikariharu[i].name,
-                    padadhikariharu_1_pada:nextProps.padadhikariharu[i].pada,
-                    padadhikariharu_1_na_na:nextProps.padadhikariharu[i].na_na,
-                })
-            }
-            if(nextProps.padadhikariharu[i].id===2){
-                this.setState({
-                    padadhikariharu_2_id:nextProps.padadhikariharu[i].id,
-                    padadhikariharu_2_name:nextProps.padadhikariharu[i].name,
-                    padadhikariharu_2_pada:nextProps.padadhikariharu[i].pada,
-                })
-            }
-            if(nextProps.padadhikariharu[i].id===3){
-                this.setState({
-                    padadhikariharu_3_id:nextProps.padadhikariharu[i].id,
-                    padadhikariharu_3_name:nextProps.padadhikariharu[i].name,
-                    padadhikariharu_3_pada:nextProps.padadhikariharu[i].pada,
-                })
-            }
-        }
     }
     render() {
         return (
@@ -226,26 +218,26 @@ class SifarisPrint extends React.PureComponent {
                     </div>
                     <div id="foo">
                         <div id="left">
-                            <span>पत्र संख्या :  </span>
-                            <span>चलानी नं. : {this.state.aa_ba}/{this.state.letterDate.length>1 ? this.state.aa_ba+1 : null} </span>
+                            <span>पत्र संख्या : {this.props.aa_ba} </span>
+                            <span>चलानी नं. :  </span>
                         </div>
                         <div id="right">
                             <span>गण्डकी प्रदेश, नेपाल</span>
                         </div>
                     </div>
                 </div>
-                <div id="date"> मिति : {this.state.letterDate} </div>
-                <div id="office">{this.state.selectedBankOption.bank_name}, <br/>{this.state.selectedBankOption.bank_sakha},<br/>{this.state.selectedBankOption.bank_thegana}</div>
+                <div id="date"> मिति : {this.props.letterDate} </div>
+                <div id="office">{this.props.bank.name}, <br/>{this.props.bank.branch},<br/>{this.props.bank.addr}</div>
                 <div id="subject">खाता संचालनको लागि सिफारिस गरिएको । </div>
                 <div id="body">
-                    प्रस्तुत विषयमा थासाङ गाउँपालिकाको आ.व. 077/78 को बार्षिक स्वीकृत कार्यक्रम अनुसार { this.state.aayojanako_naam} लागि
-                    मिति {this.props.project.gathan_vayeko_miti} को वडा नं. {this.state.aayojana_hune_woda} को आम
-                    भेलाले {this.state.padadhikariharu_1_name} ({this.state.padadhikariharu_1_na_na}) को
-                    अध्यक्षामा {this.state.jamma_padadhikariharu} सदस्यीय {this.state.upabhokta_samitiko_naam} गठन
-                    भई मिति {this.state.aayojana_suru_miti} मा यस कार्यालय सँग योजना सम्झौता भइसकेकोले
-                    {this.state.padadhikariharu_1_id!=null ? ' श्री ' +this.state.padadhikariharu_1_name+ ' ('+ this.state.padadhikariharu_1_pada+')' : null }
-                    {this.state.padadhikariharu_2_id!=null ? ',श्री ' +this.state.padadhikariharu_2_name+ ' ('+ this.state.padadhikariharu_2_pada+')' : null }
-                    {this.state.padadhikariharu_3_id!=null ? 'र श्री ' +this.state.padadhikariharu_3_name+ ' ('+ this.state.padadhikariharu_3_pada+') ' : null }
+                    प्रस्तुत विषयमा थासाङ गाउँपालिकाको आ.व. 077/78 को बार्षिक स्वीकृत कार्यक्रम अनुसार { this.props.project.aayojanako_naam} लागि
+                    मिति {this.props.project.gathan_vayeko_miti} को वडा नं. {this.props.project.wardNumber} को आम
+                    भेलाले { this.props.projectPadadhikariVitalPost.length>0 ? this.props.projectPadadhikariVitalPost[0].name+''+this.props.projectPadadhikariVitalPost[0].na_na : null}) को
+                    अध्यक्षामा {this.props.totalProjectPadadhikari} सदस्यीय {this.props.project.upabhokta_samitiko_naam} गठन
+                    भई मिति {this.props.aayojana_suru_miti} मा यस कार्यालय सँग योजना सम्झौता भइसकेकोले
+                    {this.props.projectPadadhikariVitalPost.map((item,index)=>{
+                        return <span> श्री {item.name} ({item.pada}), </span>
+                    })}
                      बाट बैङ्को नाम मा संयुक्त खाता संलागन गर्न सिफारिससाथ अनुरोध छ ।
                 </div>
                 <div id="sign">

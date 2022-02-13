@@ -1,39 +1,36 @@
 #sifaris{
-    width: 100%;
+    width: 85%;
+    margin-left: 15%;
     background-color: lightgray;
-    display: flex;
-    flex-direction: row;
+    padding-bottom: 20px;
 }
-#sifaris>#container{
-    width: 84%;
-    margin-left: 16%;
-    margin-top: 15px;
-    margin-bottom: 50px;
-}
-#sifaris>#container>#title{
+#sifaris>#title{
     font-size: 25px;
     font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 15px;
+    margin-left: 2%;
+    margin-right: 2%;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
-#sifaris>#container>#project{
+#sifaris>#container{
     display: flex;
     flex-direction: row;
-    width: 100%;
+    width: 96%;
+    margin: 0 2% 20px 2%;
 }
-#sifaris>#container>#project>#entry{
+#sifaris>#container>#entry{
     width: 50%;
     background-color: white;
     border-radius: 2px;
-    padding-top: 15px;
+    padding: 10px;
+
 }
-#sifaris>#container>#project>#entry>#select_sifaris{
+#sifaris>#container>#entry>#select_sifaris{
     background-color: white;
     display: flex;
     flex-direction: row;
-    padding-left: 15px;
 }
-#sifaris>#container>#project>#entry>#select_sifaris>button{
+#sifaris>#container>#entry>#select_sifaris>button{
     margin-right: 15px;
     cursor: pointer;
     border: none;
@@ -41,55 +38,55 @@
     padding: 5px;
     color: black;
 }
-#sifaris>#container>#project>#entry>#select_sifaris>button:hover{
+#sifaris>#container>#entry>#select_sifaris>button:hover{
     background-color: green;
     color:white;
 }
-#sifaris>#container>#project>#entry>#select_people{
+#sifaris>#container>#entry>#select_people{
     background-color: white;
     margin-top: 40px;
     padding-left: 20px;
 }
-#sifaris>#container>#project>#entry>#sifaris_data{
+
+#sifaris>#container>#entry>#sifaris_data{
     background-color: white;
     margin-top: 10px;
     width: 90%;
-    padding: 0 5% 0 5%;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item{
+#sifaris>#container>#entry>#sifaris_data>.item{
     margin-top: 15px;
     font-size: 14px;
     position:relative;
     width: 45%;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#input{
+#sifaris>#container>#entry>#sifaris_data>.item>#input{
     display: flex;
     flex-direction: column;
     width: 100%;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#input input{
+#sifaris>#container>#entry>#sifaris_data>.item>#input input{
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 2px;
     outline:none;
     font-family: Kalimati;
     margin-top: 12px;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#input .date_picker{
+#sifaris>#container>#entry>#sifaris_data>.item>#input .date_picker{
     cursor: pointer;
     width: 100%;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#input>select{
+#sifaris>#container>#entry>#sifaris_data>.item>#input>select{
     border: 1px solid rgba(0,0,0,0.2);
     border-radius: 2px;
     outline:none;
     margin-top: 12px;
     padding: 3px;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#result{
+#sifaris>#container>#entry>#sifaris_data>.item>#result{
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 1px 1px rgba(0,0,0,0.1);
@@ -101,23 +98,23 @@
     z-index: 1;
     margin-top: 5px;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span{
+#sifaris>#container>#entry>#sifaris_data>.item>#result>span{
     font-size: 13px;
     cursor: pointer;
     margin-top: 2px;
 }
-#sifaris>#container>#project>#entry>#sifaris_data>.item>#result>span:hover{
+#sifaris>#container>#entry>#sifaris_data>.item>#result>span:hover{
     color:brown;
     font-weight:bold;
 }
-#sifaris>#container>#project>#entry>#controls{
+#sifaris>#container>#entry>#controls{
     background-color: white;
     display: flex;
     flex-direction: row;
     margin-top: 30px;
     justify-content: center;
 }
-#sifaris>#container>#project>#entry>#controls>button{
+#sifaris>#container>#entry>#controls>button{
     margin-right: 15px;
     cursor: pointer;
     border: none;
@@ -125,10 +122,10 @@
     padding: 5px 15px 5px 15px;
     color: black;
 }
-#sifaris>#container>#project>#entry>#controls>button:hover{
+#sifaris>#container>#entry>#controls>button:hover{
     background-color: darkgray;
 }
-#sifaris>#container>#project>#print_preview{
+#sifaris>#container>#print_preview{
     width: 48%;
     margin-right: 1%;
     margin-left: 1%;

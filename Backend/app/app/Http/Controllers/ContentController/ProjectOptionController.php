@@ -63,6 +63,7 @@ class ProjectOptionController extends Controller
             $validator = Validator::make($request->all(), [
                 'padadhikariPada.pada' => 'required|string|max:25',
                 'padadhikariPada.level' => 'required|string|max:25',
+                'padadhikariPada.vitalPost' => 'required|boolean',
             ]);
             if ($validator->fails()) {
                 $errors =true;
@@ -71,6 +72,7 @@ class ProjectOptionController extends Controller
                     [
                         'pada' => $request->padadhikariPada['pada'],
                         'level' => $request->padadhikariPada['level'],
+                        'vitalPost' => $request->padadhikariPada['vitalPost'],
                     ]
                 );
             }
@@ -99,9 +101,10 @@ class ProjectOptionController extends Controller
             if ($validator->fails()) {
                 $errors =true;
             } else {
+                $aa_ba = DB::selectOne('SELECT * FROM setting Where title=? ', ["aa_ba"]);
                 $query = DB::table('totalwardprojects')->updateOrInsert(
                     ['wardId' => $request->totalWardProject['wardId']],
-                    ['total' => $request->totalWardProject['total']],
+                    ['total' => $request->totalWardProject['total'], 'aaBa' => $aa_ba->option],
                 );
             }
         }
@@ -134,6 +137,10 @@ class ProjectOptionController extends Controller
         if($request->detail==='ward'){
             $wards = DB::select('SELECT * FROM wards', []);
             return response($wards);
+        }
+        if($request->detail==='bank'){
+            $banks = DB::select('SELECT * FROM banks', []);
+            return response($banks);
         }
         if($request->options==='totalYojanaharu'){
             $yojana_sangkhya = DB::select('SELECT * FROM yojana_sangkhya where fy=?', [$request->fy]);

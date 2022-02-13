@@ -213,7 +213,7 @@ class ProjectDataController extends Controller
         if ($validator->fails()) {
             return response(array(0,$validator->errors()));
         }
-        $query = DB::selectOne('SELECT projects.*, projects.id as projectId, projectpadadhikaris.*, projectkistakobiwarans.*, projectbastugatanudans.*, ppas.*, ppas.name as ppaName, ppas.phone as ppaPhone FROM projects JOIN projectpadadhikaris JOIN projectkistakobiwarans JOIN projectbastugatanudans JOIN ppas on (projects.id=projectpadadhikaris.projectId and projects.id=projectkistakobiwarans.projectId and projects.id=projectbastugatanudans.projectId and projects.ppaId=ppas.id) WHERE projects.id=?', [$request->projectId]);
+        $query = DB::selectOne('SELECT projects.*, projects.id as projectId, projectpadadhikaris.*, projectkistakobiwarans.*, projectbastugatanudans.*, ppas.*, ppas.name as ppaName, ppas.phone as ppaPhone, wards.number as wardNumber FROM projects JOIN projectpadadhikaris JOIN projectkistakobiwarans JOIN projectbastugatanudans JOIN ppas JOIN wards on (projects.id=projectpadadhikaris.projectId and projects.id=projectkistakobiwarans.projectId and projects.id=projectbastugatanudans.projectId and projects.ppaId=ppas.id and projects.wardId=wards.id) WHERE projects.id=?', [$request->projectId]);
         $query1 = DB::select('SELECT projectpadadhikaris.*, projectpadadhikaris.id as projectpadadhikariId, padadhikaripadas.* FROM projectpadadhikaris INNER JOIN padadhikaripadas on (projectpadadhikaris.padadhikaripadaId=padadhikaripadas.id) WHERE projectpadadhikaris.projectId=? ORDER BY padadhikaripadas.level', [$request->projectId]);
         return response(array(1,$query,$query1),201);
     }
@@ -229,7 +229,7 @@ class ProjectDataController extends Controller
         if ($validator->fails()) {
             $errors = true;
         } else {
-            $query = DB::selectOne('SELECT * FROM records WHERE id=?', [$request->id]);
+            $query = DB::selectOne('SELECT * FROM projects WHERE id=?', [$request->id]);
             $query1 = DB::select('SELECT padadhikariharu.*, padadhikari_pada_options.* FROM padadhikariharu JOIN padadhikari_pada_options on (padadhikariharu.pada=padadhikari_pada_options.id ) WHERE record_id=?', [$query->id]);
             $query2 = DB::selectOne('SELECT COUNT(id) as jamma_padadhikariharu FROM padadhikariharu WHERE record_id=?', [$query->id]);
         }
@@ -238,6 +238,19 @@ class ProjectDataController extends Controller
         } else {
             return response(array(1, $query, $query1, $query2), 201);
         }
+    }
+    function getSearch(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'projectName' => 'required|string|max:25',
+        ]);
+        if ($validator->fails()) {
+            return response(array(0, $validator->errors()));
+        } else {
+            $projects = DB::select('SELECT * FROM projects WHERE aayojanako_naam like ?', ['%' .$request->projectName. '%' ]);
+            return response(array(1, $projects));
+        }
+
     }
 
     function getProjects(Request $request)
@@ -261,60 +274,67 @@ class ProjectDataController extends Controller
         $year = substr($aa_ba->option,0,4);
         $nextYear = (int) $year + 1;
 
-        $query1 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/04/01', $year . '/05/01']);
-        $query2 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/05/01', $year . '/06/01']);
-        $query3 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/06/01', $year . '/07/01']);
-        $query4 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/07/01', $year . '/08/01']);
-        $query5 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/08/01', $year . '/09/01']);
-        $query6 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/09/01', $year . '/10/01']);
-        $query7 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/10/01', $year . '/11/01']);
-        $query8 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/11/01', $year . '/12/01']);
-        $query9 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/12/01', $nextYear . '/01/01']);
-        $query10 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/01/01', $nextYear . '/02/01']);
-        $query11 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/02/01', $nextYear . '/03/01']);
-        $query12 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/03/01', $nextYear . '/04/01']);
-        return response(array($query1, $query2, $query3, $query4, $query5, $query6, $query7, $query8, $query9, $query10, $query11, $query12), 201);
+        $query1 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/04/01', $year . '/05/01']);
+        $query2 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/05/01', $year . '/06/01']);
+        $query3 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/06/01', $year . '/07/01']);
+        $query4 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/07/01', $year . '/08/01']);
+        $query5 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/08/01', $year . '/09/01']);
+        $query6 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/09/01', $year . '/10/01']);
+        $query7 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/10/01', $year . '/11/01']);
+        $query8 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/11/01', $year . '/12/01']);
+        $query9 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/12/01', $nextYear . '/01/01']);
+        $query10 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/01/01', $nextYear . '/02/01']);
+        $query11 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/02/01', $nextYear . '/03/01']);
+        $query12 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$nextYear . '/03/01', $nextYear . '/04/01']);
+        return response(array($query1, $query2, $query3, $query4, $query5, $query6, $query7, $query8, $query9, $query10, $query11, $query12));
     }
 
     function getMunReport(Request $request)
     {
-        $year = 2078;
-        $nextYear = $year + 1;
-        $query1 = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu, sum(lagat_behorne_karyalay) as lagat_behorne_karyalay, sum(lagat_behorne_upobhokta_samiti) as lagat_behorne_upobhokta_samiti, sum(lagat_behorne_anne) as lagat_behorne_anne FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/04/01', $nextYear . '/04/01']);
-        return response($query1, 201);
+        $aa_ba = DB::selectOne('SELECT * FROM setting Where title=? ', ["aa_ba"]);
+        $year = substr($aa_ba->option,0,4);
+        $nextYear = (int) $year + 1;
+        $query = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu, sum(lagat_behorne_karyalay) as lagat_behorne_karyalay, sum(lagat_behorne_upobhokta_samiti) as lagat_behorne_upobhokta_samiti, sum(lagat_behorne_anne) as lagat_behorne_anne FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ?', [$year . '/04/01', $nextYear . '/04/01']);
+        return $query[0];
     }
 
     function getWardReport(Request $request)
     {
-        $year = 2078;
-        $nextYear = $year + 1;
-        $query = DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu, sum(lagat_behorne_karyalay) as lagat_behorne_karyalay, sum(lagat_behorne_upobhokta_samiti) as lagat_behorne_upobhokta_samiti, sum(lagat_behorne_anne) as lagat_behorne_anne, aayojana_hune_woda FROM records WHERE ( aayojana_suru_miti>= ? and aayojana_suru_miti < ? ) Group By aayojana_hune_woda', [$year . '/04/01', $nextYear . '/04/01']);
-        return response($query, 201);
+        $aa_ba = DB::selectOne('SELECT * FROM setting Where title=? ', ["aa_ba"]);
+        $year = substr($aa_ba->option,0,4);
+        $nextYear = (int) $year + 1;
+
+        $query =  DB::select('SELECT sum(lagat_anuman) as lagat_anuman, count(id) as yojanaharu, sum(lagat_behorne_karyalay) as lagat_behorne_karyalay, sum(lagat_behorne_upobhokta_samiti) as lagat_behorne_upobhokta_samiti, sum(lagat_behorne_anne) as lagat_behorne_anne, wardId FROM projects WHERE ( aayojana_suru_miti>= ? and aayojana_suru_miti < ? ) Group By wardId', [$year . '/04/01', $nextYear . '/04/01']);
+        $index = 0;
+        foreach ($query as $value){
+            $wards = DB::selectOne('SELECT * FROM wards WHERE id=?',[$value->wardId]);
+            $query[$index]->wardNumber = $wards->number;
+            $query[$index]->wardName = $wards->name;
+            $index=$index+1;
+        }
+        return $query;
     }
 
     function getProgressReport(Request $request)
     {
-//        $aa_ba = DB::selectOne('SELECT * FROM setting Where title=? ', ["aa_ba"]);
-//        $year = substr($aa_ba->option, 0, 4);
-//        $nextYear = (int)$year + 1;
-//
-//        $wards = array();
-//        $gapa = array();
-//        $query = DB::select('SELECT count(id) as yojanaharu, aayojana_hune_woda FROM records WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ? group by aayojana_hune_woda', [$year . '/04/01', $nextYear . '/04/01']);
-//        foreach ($query as $item) {
-//            $wards = DB::selectOne('SELECT * FROM ward_options where id=?', [$item->aayojana_hune_woda]);
-//            $yojana_sangkhya = DB::select('SELECT * FROM yojana_sangkhya where fy=? and ward_number=? ', [$aa_ba->option,]);
-//            array_push($wards, ['ward_number' => $wards->ward_number, 'yojanaharu' => $item->yojanaharu, 'yojana_sangkhya' => $item1->yojana_sangkhya]);
-//        }
-//
-//
-//        foreach ($query as $item) {
-//            foreach ($query1 as $item1) {
-//                if ($item->aayojana_hune_woda === $item1->ward_number) {
-//                    array_push($wards, ['ward_number' => $item1->ward_number, 'yojanaharu' => $item->yojanaharu, 'yojana_sangkhya' => $item1->yojana_sangkhya]);
-//                }
-//            }
-//        }
+        $aa_ba = DB::selectOne('SELECT * FROM setting Where title=? ', ["aa_ba"]);
+        $year = substr($aa_ba->option,0,4);
+        $nextYear = (int) $year + 1;
+
+        $query = DB::select('SELECT count(id) as totalCompletedWardProjects, wardId FROM projects WHERE aayojana_suru_miti>= ? and aayojana_suru_miti < ? group by wardId', [$year . '/04/01', $nextYear . '/04/01']);
+        $index = 0;
+        $gapa = array('totalGapaProjects'=>0,'totalCompletedGapaProjects'=>0);
+        foreach ($query as $item) {
+            $wards = DB::selectOne('SELECT * FROM wards where id=?', [$item->wardId]);
+            $totalwardprojects = DB::selectOne('SELECT * FROM totalwardprojects where wardId=? ', [$item->wardId]);
+            $query[$index]->wardNumber = $wards->number;
+            $query[$index]->wardName = $wards->name;
+            $query[$index]->totalWardProjects = $totalwardprojects->total;
+            $gapa['totalGapaProjects'] = $gapa['totalGapaProjects']+$totalwardprojects->total;
+            $gapa['totalCompletedGapaProjects'] = $gapa['totalCompletedGapaProjects']+$item->totalCompletedWardProjects;
+            $index=$index+1;
+        }
+        return array($query,$gapa);
     }
 }
 

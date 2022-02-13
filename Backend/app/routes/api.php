@@ -33,7 +33,7 @@ Route::post("getOptionRecord",[ProjectOptionController::class,'getOptionRecord']
 Route::post("getProject",[ProjectDataController::class,'getProject']);
 Route::post("getOptions",[ProjectOptionController::class,'getOptions']);
 Route::post("deleteDetail",[ProjectOptionController::class,'deleteDetail']);
-Route::post("searchProject",[ProjectDataController::class,'searchProject']);
+Route::post("getSearch",[ProjectDataController::class,'getSearch']);
 Route::post("getSifaris",[ProjectDataController::class,'getSifaris']);
 Route::post("getProjects",[ProjectDataController::class,'getProjects']);
 Route::post("getBarChart",[ProjectDataController::class,'getBarChart']);

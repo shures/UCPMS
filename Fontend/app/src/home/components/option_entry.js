@@ -27,6 +27,7 @@ export class OptionEntry extends React.Component{
                 padadhikariPada:{
                     pada:'',
                     level:'',
+                    vitalPost:false,
                 },
                 ward:{
                     name:'',
@@ -77,6 +78,7 @@ export class OptionEntry extends React.Component{
         this.setState({message:''});
         let name = event.target.name;
         let value = event.target.value;
+        let checked = event.target.checked;
         let biwaran = this.state.biwaran;
         if(name==="selectedBiwaran"){biwaran.selectedBiwaran=value}
         if(name==="bankName"){biwaran.bank.name=value;}
@@ -87,6 +89,7 @@ export class OptionEntry extends React.Component{
         if(name==="lagatBehorneSrotName"){biwaran.lagatBehorneSrot.name=value;}
         if(name==="padadhikariPadaName"){biwaran.padadhikariPada.pada=value;}
         if(name==="padadhikariPadaLevel"){biwaran.padadhikariPada.level=value;}
+        if(name==="padadhikariPadaVitalPost"){biwaran.padadhikariPada.vitalPost=checked;}
         if(name==="wardName"){biwaran.ward.name=value;}
         if(name==="wardNumber"){biwaran.ward.number=value;}
         if(name==="totalWardProjectTotal"){biwaran.totalWardProject.total=value;}
@@ -189,6 +192,12 @@ export class OptionEntry extends React.Component{
                                     <div id="input">
                                         <span>पदाधिकारी स्तर</span>
                                         <input name="padadhikariPadaLevel" value={this.state.biwaran.padadhikariPada.level} onChange={this.handleValueChange} type="text" placeholder="पदाधिकारी स्तर"/>
+                                    </div>
+                                </div>
+                                <div className="item">
+                                    <div id="input">
+                                        <span>Vital Post हो ?</span>
+                                        <input name="padadhikariPadaVitalPost" value={this.state.biwaran.padadhikariPada.vitalPost} onChange={this.handleValueChange} type="checkbox"/>
                                     </div>
                                 </div>
                             </Fragment> : null }
@@ -345,13 +354,14 @@ class Detail extends React.Component{
                     <Fragment>
                         <table>
                             <tr>
-                                <td>क्र.सं.</td><td>पदाधिकारी पदको नाम</td><td>पदाधिकारी पदको स्तर</td><td>हजाउनुहोस</td>
+                                <td>क्र.सं.</td><td>पदाधिकारी पदको नाम</td><td>पदाधिकारी पदको स्तर</td><td>VITAL POST</td><td>हजाउनुहोस</td>
                             </tr>
                             {this.state.receivedDetail.padadhikariPadas.map((padadhikariPada, index)=>{
                                 return  <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{padadhikariPada.pada}</td>
                                     <td>{padadhikariPada.level}</td>
+                                    <td>{padadhikariPada.vitalPost}</td>
                                     <td><img onClick={()=>this.handleDataDelete(this.props.biwaran.selectedBiwaran,padadhikariPada.id,index)} src={require('./../../icons/delete.svg').default}/></td>
                                 </tr>
                             })}

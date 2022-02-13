@@ -18,7 +18,7 @@ export class Home extends React.Component{
             wardReport:[],
             progressReport:{
                 wards:[],
-                gapa:{sampanna_yojanaharu:0,jamma_yojanaharu:0},
+                gapa:{},
             }
         }
     }
@@ -75,7 +75,8 @@ export class Home extends React.Component{
             url: localStorage.getItem('server')+'api/getMunReport',
             data: {},
         }).then((response)=>{
-            this.setState({munReport:response.data[0]});
+            console.log(response.data);
+            this.setState({munReport:response.data});
         }).catch(function (error) {
 
         });
@@ -84,6 +85,7 @@ export class Home extends React.Component{
             url: localStorage.getItem('server')+'api/getWardReport',
             data: {},
         }).then((response)=>{
+            console.log(response.data);
             this.setState({wardReport:response.data});
         }).catch(function (error) {
 
@@ -93,27 +95,19 @@ export class Home extends React.Component{
             url: localStorage.getItem('server')+'api/getProgressReport',
             data: {},
         }).then((response)=>{
-            console.log('ward report'+""+JSON.stringify(response.data));
-            let sampanna_yojanaharu = 0;
-            let jamma_yojanaharu = 0;
-            response.data[1].forEach((item,index,arr)=>{
-                sampanna_yojanaharu = sampanna_yojanaharu+item.yojanaharu;
-                jamma_yojanaharu = jamma_yojanaharu+item.yojana_sangkhya;
-            })
             let progresReport = this.state.progressReport;
-            progresReport.wards = response.data[1];
-            progresReport.gapa.sampanna_yojanaharu=sampanna_yojanaharu;
-            progresReport.gapa.jamma_yojanaharu= jamma_yojanaharu;
-            this.setState({progressReport:progresReport});
+            progresReport.wards = response.data[0];
+            progresReport.gapa = response.data[1];
+            this.setState({progresReport:progresReport});
         }).catch(function (error) {
 
         });
     }
     render() {
         return (
-            <div id='home'>
+            <React.Fragment>
                 <Header/>
-                <div id="container">
+                <div id="home">
                     <div id="home_header">
                         <div id="title">
                             <span>ड्यासबोर्ड, <b>योजना व्यवस्थापन सुचना प्रमाणी, आर्थिक बर्ष {this.state.aa_ba.selected} को । </b> </span>
@@ -126,10 +120,10 @@ export class Home extends React.Component{
                         <div id="user">
                             <img onClick={()=>this.setState({showSetting:!this.state.showSetting})} src={require('./../../icons/3-vertical-dots.svg').default}/>
                             {this.state.showSetting ?
-                            <div id="setting">
-                                <span onClick={()=>this.setState({showSetting:false})}>पासवर्ड परिवर्तन</span>
-                                <span onClick={()=>this.setState({showSetting:false})}>लग आउट</span>
-                            </div> : null }
+                                <div id="setting">
+                                    <span onClick={()=>this.setState({showSetting:false})}>पासवर्ड परिवर्तन</span>
+                                    <span onClick={()=>this.setState({showSetting:false})}>लग आउट</span>
+                                </div> : null }
                         </div>
                     </div>
                     <div id="report">
@@ -176,7 +170,7 @@ export class Home extends React.Component{
                                 {this.state.wardReport.map((item,index)=>{
                                     return <div className="item">
                                         <div>
-                                            <b>वडा नं. {item.aayojana_hune_woda} ({item.yojanaharu}) </b>
+                                            <b>वडा नं. {item.wardNumber}, {item.wardName} ({item.yojanaharu}) </b>
                                             <span>ला.अ. : रु {item.lagat_anuman}</span>
                                             <span>कार्यालय : रु {item.lagat_behorne_karyalay}</span>
                                             <span>जनस्तर : रु {item.lagat_behorne_upobhokta_samiti}</span>
@@ -190,21 +184,21 @@ export class Home extends React.Component{
                             <div id='title'>योजनाहरुको प्रगति प्रतिवेद</div>
                             <div id="data">
                                 <div className="item">
-                                    <div id="name">गाउँपालिका ( {this.state.progressReport.gapa.sampanna_yojanaharu}/{this.state.progressReport.gapa.jamma_yojanaharu})<b> ( {((this.state.progressReport.gapa.sampanna_yojanaharu/this.state.progressReport.gapa.jamma_yojanaharu)*100).toFixed(2)} %) </b></div>
+                                    <div id="name">गाउँपालिका ( {this.state.progressReport.gapa.totalCompletedGapaProjects}/{this.state.progressReport.gapa.totalGapaProjects})<b> ( {((this.state.progressReport.gapa.totalCompletedGapaProjects/this.state.progressReport.gapa.totalGapaProjects)*100).toFixed(2)} %) </b></div>
                                     <div id="bar">
-                                        <div id="progress" style={{width:`${(this.state.progressReport.gapa.sampanna_yojanaharu/this.state.progressReport.gapa.jamma_yojanaharu)*100}%`}}>
+                                        <div id="progress" style={{width:`${(this.state.progressReport.gapa.totalCompletedGapaProjects/this.state.progressReport.gapa.totalGapaProjects)*100}%`}}>
 
                                         </div>
                                     </div>
                                 </div>
                                 {this.state.progressReport.wards.map((item,index)=>{
                                     return <div key={index} className="item">
-                                        <div id="name"><b>वडा नं. {item.ward_number} ({item.yojanaharu}/{item.yojana_sangkhya}) ({((item.yojanaharu/item.yojana_sangkhya)*100).toFixed(2)}%)</b></div>
-                                            <div id="bar">
-                                                <div id="progress" style={{width:`${(item.yojanaharu/item.yojana_sangkhya)*100}%`}}>
+                                        <div id="name"><b>वडा नं. {item.wardNumber} ({item.totalCompletedWardProjects}/{item.totalWardProjects}) ({((item.totalCompletedWardProjects/item.totalWardProjects)*100).toFixed(2)}%)</b></div>
+                                        <div id="bar">
+                                            <div id="progress" style={{width:`${(item.totalCompletedWardProjects/item.totalWardProjects)*100}%`}}>
 
-                                                </div>
                                             </div>
+                                        </div>
                                     </div>
                                 })}
                             </div>
@@ -219,7 +213,7 @@ export class Home extends React.Component{
                         <button> <img src={require('./../../icons/save-all-files.svg').default}/>डाटा ब्याककप लिनुहोस </button>
                     </div>
                 </div>
-            </div>
+            </React.Fragment>
         );
     }
 }

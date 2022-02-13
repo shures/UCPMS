@@ -9,7 +9,7 @@ class Setting extends Controller{
 
     function getSetting(Request $request){
         $validator = Validator::make($request->all(), [
-            'aa_ba'=>'string|max:10',
+            'setting'=>'required|string|max:10',
         ]);
         if ($validator->fails()) {
             return response(array(0,$validator->errors()));

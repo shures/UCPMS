@@ -17,6 +17,7 @@ class CreateTotalwardprojectsTable extends Migration
             $table->increments('id');
             $table->integer('wardId')->unsigned();
             $table->integer('total')->unsigned();
+            $table->string('aaBa');
             $table->foreign('wardId')->references('id')->on('wards');
         });
     }

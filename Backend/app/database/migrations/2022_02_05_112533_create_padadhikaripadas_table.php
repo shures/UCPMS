@@ -17,6 +17,7 @@ class CreatePadadhikaripadasTable extends Migration
             $table->increments('id');
             $table->string('pada');
             $table->string('level');
+            $table->boolean('vitalPost');
         });
     }
 
